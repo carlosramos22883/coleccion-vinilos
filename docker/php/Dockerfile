@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Instalar extensiones de PHP necesarias para CodeIgniter 4 y MySQL
+RUN docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd
+
 # Configuración e instalación de la librería GD para imágenes (JPEG, PNG, WebP)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd
