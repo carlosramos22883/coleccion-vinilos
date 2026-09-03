@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: vinil_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    networks:
+      - vinil_network
+
+  webserver:
+    image: nginx:alpine
+    container_name: vinil_webserver
+    restart: unless-stopped
+    ports:
+      - "8083:80"
+    volumes:
+      - .:/var/www/html # Cambiado de ./app a .
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - vinil_network
+
+  db:
+    image: mysql:8.0
+    container_name: vinil_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: vinil_collection
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: vinil_user
+      MYSQL_PASSWORD: vinil_password
+    ports:
+      - "3309:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - vinil_network
+
+networks:
+  vinil_network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
