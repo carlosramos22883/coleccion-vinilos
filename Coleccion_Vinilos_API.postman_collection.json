@@ -1,240 +1,389 @@
 {
-	"info": {
-		"_postman_id": "c1f2e3d4-a5b6-7c8d-9e0f-1a2b3c4d5e6f",
-		"name": "Colección Vinilos API",
-		"description": "Endpoints para la API REST de Colección de Vinilos y CD con CodeIgniter 4 y JWT.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:8083",
-			"type": "string"
-		},
-		{
-			"key": "jwt_token",
-			"value": "",
-			"type": "string"
-		}
-	],
-	"item": [
-		{
-			"name": "Autenticación",
-			"item": [
-				{
-					"name": "1. Registrar Usuario",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"nombre\": \"Melómano\",\n  \"email\": \"coleccionista@ejemplo.com\",\n  \"password\": \"Password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"register"
-							]
-						}
-					}
-				},
-				{
-					"name": "2. Iniciar Sesión (Obtener JWT)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();",
-									"if (jsonData.token) {",
-									"    pm.collectionVariables.set('jwt_token', jsonData.token);",
-									"    console.log('Token JWT guardado automáticamente en la colección.');",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"coleccionista@ejemplo.com\",\n  \"password\": \"Password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Vinilos",
-			"item": [
-				{
-					"name": "3. Listar todos los Vinilos (Público)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/vinilos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"vinilos"
-							]
-						}
-					}
-				},
-				{
-					"name": "4. Obtener un Vinilo por ID (Público)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/vinilos/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"vinilos",
-								"1"
-							]
-						}
-					}
-				},
-				{
-					"name": "5. Crear Vinilo con Fotos (Protegido con JWT)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "titulo",
-									"value": "The Dark Side of the Moon",
-									"type": "text"
-								},
-								{
-									"key": "artista",
-									"value": "Pink Floyd",
-									"type": "text"
-								},
-								{
-									"key": "anio_lanzamiento",
-									"value": "1973",
-									"type": "text"
-								},
-								{
-									"key": "genero",
-									"value": "Rock Progresivo",
-									"type": "text"
-								},
-								{
-									"key": "formato",
-									"value": "12\" LP",
-									"type": "text"
-								},
-								{
-									"key": "estado_conservacion",
-									"value": "Near Mint (NM)",
-									"type": "text"
-								},
-								{
-									"key": "estado_adquisicion",
-									"value": "Comprado Usado",
-									"type": "text"
-								},
-								{
-									"key": "fecha_adquisicion",
-									"value": "2026-05-10",
-									"type": "text"
-								},
-								{
-									"key": "precio",
-									"value": "45.00",
-									"type": "text"
-								},
-								{
-									"key": "fotos[]",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/vinilos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"vinilos"
-							]
-						}
-					}
-				},
-				{
-					"name": "6. Eliminar Vinilo (Protegido con JWT)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/vinilos/1",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"vinilos",
-								"1"
-							]
-						}
-					}
-				}
-			]
-		}
-	]
+    "info": {
+        "_postman_id": "c1f2e3d4-a5b6-7c8d-9e0f-1a2b3c4d5e6f",
+        "name": "Colección Vinilos API",
+        "description": "Endpoints para la API REST de Colección de Vinilos y CD con CodeIgniter 4, JWT y RBAC.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8083",
+            "type": "string"
+        },
+        {
+            "key": "jwt_token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Autenticación",
+            "item": [
+                {
+                    "name": "1. Registrar Usuario",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Melómano\",\n  \"email\": \"coleccionista@ejemplo.com\",\n  \"password\": \"Password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "2. Iniciar Sesión (Obtener JWT)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.token);",
+                                    "    console.log('Token JWT guardado automáticamente.');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"coleccionista@ejemplo.com\",\n  \"password\": \"Password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Vinilos",
+            "item": [
+                {
+                    "name": "3. Listar / Buscar Vinilos (Público + Filtros)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/vinilos?buscar=&genero=&formato=&estado_conservacion=&page=1&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "buscar",
+                                    "value": "",
+                                    "description": "Busca por título, artista o género"
+                                },
+                                {
+                                    "key": "genero",
+                                    "value": "",
+                                    "description": "Filtro exacto de género (ej: Grunge, Rock)"
+                                },
+                                {
+                                    "key": "formato",
+                                    "value": "",
+                                    "description": "Filtro por formato (ej: LP, EP, Single)"
+                                },
+                                {
+                                    "key": "estado_conservacion",
+                                    "value": "",
+                                    "description": "Filtro por estado de conservación (ej: M, NM, VG+)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "4. Obtener un Vinilo por ID (Público)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/vinilos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "5. Crear Vinilo con Fotos (Requiere 'vinilos.create')",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "titulo",
+                                    "value": "Nevermind",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "artista",
+                                    "value": "Nirvana",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "anio_lanzamiento",
+                                    "value": "1991",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "genero",
+                                    "value": "Grunge",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "formato",
+                                    "value": "LP",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "estado_conservacion",
+                                    "value": "NM",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "estado_adquisicion",
+                                    "value": "Regalado Nuevo",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "fecha_adquisicion",
+                                    "value": "2026-08-22",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "precio",
+                                    "value": "30.00",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "fotos",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/vinilos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "6. Actualizar Datos de Vinilo (Requiere 'vinilos.edit')",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"precio\": \"45.00\",\n    \"estado_conservacion\": \"M\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/vinilos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "7. Agregar Fotos a Vinilo Existente (Requiere 'vinilos.create')",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "fotos",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/vinilos/1/fotos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos",
+                                "1",
+                                "fotos"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "8. Eliminar una Foto Específica (Requiere 'vinilos.delete')",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/vinilos/fotos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos",
+                                "fotos",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "9. Eliminar Vinilo Completo (Requiere 'vinilos.delete')",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/vinilos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "vinilos",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Perfil",
+            "item": []
+        },
+        {
+            "name": "Usuarios (RBAC)",
+            "item": []
+        },
+        {
+            "name": "Roles y Permisos (RBAC)",
+            "item": []
+        }
+    ]
 }

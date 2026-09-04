@@ -14,14 +14,62 @@ class ViniloController extends ResourceController
     // GET /vinilos
     public function index()
     {
+        $viniloModel = new ViniloModel();
         $viniloFotoModel = new ViniloFotoModel();
-        $vinilos = $this->model->findAll();
+
+        // Obtener parámetros de búsqueda y filtro desde la URL
+        $buscar   = $this->request->getGet('buscar');
+        $artista  = $this->request->getGet('artista');
+        $genero   = $this->request->getGet('genero');
+        $anio     = $this->request->getGet('anio_lanzamiento');
+        $formato  = $this->request->getGet('formato');
+        $estado   = $this->request->getGet('estado_conservacion');
+        $limit    = (int) ($this->request->getGet('limit') ?? 10);
+        $page     = (int) ($this->request->getGet('page') ?? 1);
+
+        if (!empty($buscar)) {
+            $viniloModel->groupStart()
+                ->like('titulo', $buscar)
+                ->orLike('artista', $buscar)
+                ->orLike('genero', $buscar)
+                ->groupEnd();
+        }
+
+        if (!empty($artista)) {
+            $viniloModel->like('artista', $artista);
+        }
+
+        if (!empty($genero)) {
+            $viniloModel->where('genero', $genero);
+        }
+
+        if (!empty($anio)) {
+            $viniloModel->where('anio_lanzamiento', $anio);
+        }
+
+        if (!empty($formato)) {
+            $viniloModel->where('formato', $formato);
+        }
+
+        if (!empty($estado)) {
+            $viniloModel->where('estado_conservacion', $estado);
+        }
+
+        $vinilos = $viniloModel->paginate($limit, 'default', $page);
+        $pager   = $viniloModel->pager;
 
         foreach ($vinilos as &$vinilo) {
             $vinilo['fotos'] = $viniloFotoModel->where('vinilo_id', $vinilo['id'])->findAll();
         }
 
-        return $this->respond($vinilos);
+        return $this->respond([
+            'status'     => 200,
+            'total'      => $pager->getTotal(),
+            'per_page'   => $limit,
+            'page'       => $page,
+            'page_count' => $pager->getPageCount(),
+            'data'       => $vinilos
+        ]);
     }
 
     // GET /vinilos/(:num)
@@ -42,32 +90,15 @@ class ViniloController extends ResourceController
     public function create()
     {
         $data = $this->request->getPost();
+        if (empty($data)) {
+            $data = $this->request->getJSON(true);
+        }
 
         if (!$this->model->save($data)) {
             return $this->fail($this->model->errors());
         }
 
         $viniloId = $this->model->getInsertID();
-        $viniloFotoModel = new ViniloFotoModel();
-
-        // Procesar subida de fotografías
-        $fotos = $this->request->getFiles();
-        if (isset($fotos['fotos'])) {
-            $esPrimera = true;
-            foreach ($fotos['fotos'] as $foto) {
-                if ($foto->isValid() && !$foto->hasMoved()) {
-                    $newName = $foto->getRandomName();
-                    $foto->move(FCPATH . 'uploads/vinilos', $newName);
-
-                    $viniloFotoModel->save([
-                        'vinilo_id'  => $viniloId,
-                        'ruta_foto'  => 'uploads/vinilos/' . $newName,
-                        'es_portada' => $esPrimera ? 1 : 0
-                    ]);
-                    $esPrimera = false;
-                }
-            }
-        }
 
         return $this->respondCreated([
             'status'  => 201,
@@ -99,6 +130,33 @@ class ViniloController extends ResourceController
         return $this->respondDeleted([
             'status'  => 200,
             'message' => 'Vinilo y sus fotografías eliminados correctamente'
+        ]);
+    }
+
+    // PUT /vinilos/(:num)
+    public function update($id = null)
+    {
+        $vinilo = $this->model->find($id);
+        if (!$vinilo) {
+            return $this->failNotFound('Vinilo no encontrado');
+        }
+
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            $data = $this->request->getRawInput();
+        }
+
+        if (empty($data)) {
+            return $this->fail('No se enviaron datos válidos.', 400);
+        }
+
+        if (!$this->model->update($id, $data)) {
+            return $this->fail($this->model->errors());
+        }
+
+        return $this->respond([
+            'status'  => 200,
+            'message' => 'Vinilo actualizado correctamente'
         ]);
     }
 }

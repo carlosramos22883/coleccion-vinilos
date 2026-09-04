@@ -69,6 +69,14 @@ class CreateAuthTables extends Migration
                 'constraint' => '255',
                 'null'       => true,
             ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
         ]);
         $this->forge->addKey('id', true);
         $this->forge->createTable('roles');
@@ -84,6 +92,14 @@ class CreateAuthTables extends Migration
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
         $this->forge->addKey(['user_id', 'role_id'], true);

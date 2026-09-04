@@ -44,6 +44,16 @@ class AuthController extends ResourceController
 
     public function login()
     {
+        // Permitir CORS desde el navegador
+        $this->response->setHeader('Access-Control-Allow-Origin', '*');
+        $this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        $this->response->setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+
+        // Manejar preflight options en caso de llegar al controlador
+        if (strtolower($this->request->getMethod()) === 'options') {
+            return $this->response->setStatusCode(200);
+        }
+
         $email    = $this->request->getVar('email');
         $password = $this->request->getVar('password');
 

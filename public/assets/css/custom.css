@@ -1,0 +1,144 @@
+/* =================================================_
+   ESTILOS PERSONALIZADOS - VINILOS APP
+   ================================================= */
+
+:root {
+    --bg-body: #f8f9fa;
+    --sidebar-bg: #212529;
+    --sidebar-header-bg: #1b1e21;
+    --sidebar-color: #adb5bd;
+    --sidebar-hover-color: #ffffff;
+    --sidebar-active-bg: #0d6efd;
+    --topbar-bg: #ffffff;
+    --footer-bg: #ffffff;
+    --primary-color: #0d6efd;
+}
+
+body {
+    background-color: var(--bg-body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* =================================================
+   ESTILO ESPECÍFICOS PARA AUTH (LOGIN / REGISTER)
+   ================================================= */
+body.auth-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: var(--bg-body);
+}
+
+/* Estilos del Sidebar */
+#sidebar {
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--sidebar-bg);
+    color: #fff;
+    transition: all 0.3s;
+    z-index: 1050;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: var(--sidebar-header-bg);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+}
+
+#sidebar ul li a {
+    padding: 12px 20px;
+    display: block;
+    color: var(--sidebar-color);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+#sidebar ul li a:hover,
+#sidebar ul li.active a {
+    color: var(--sidebar-hover-color);
+    background: var(--sidebar-active-bg);
+}
+
+#sidebar ul li a i {
+    margin-right: 10px;
+}
+
+/* Contenido principal desplazable */
+#content-wrapper {
+    width: calc(100% - 260px);
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* Topbar */
+.topbar {
+    height: 60px;
+    background: var(--topbar-bg);
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+/* Contenido dinámico */
+.main-container {
+    flex: 1;
+    padding: 30px;
+}
+
+/* Footer fijo abajo */
+footer {
+    background: var(--footer-bg);
+    border-top: 1px solid #dee2e6;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -260px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+    #content-wrapper.active {
+        margin-left: 260px;
+    }
+}
+
+/* Forzar que el mensaje de error aparezca debajo del input cuando tenga la clase is-invalid */
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block !important;
+}
+
+/* Estilo personalizado de error para evitar conflictos con Bootstrap */
+.input-error {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem) !important;
+    background-image: none !important; /* Quita el icono feo del navegador/bootstrap */
+}

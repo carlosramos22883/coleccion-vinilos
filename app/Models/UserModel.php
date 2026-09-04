@@ -43,4 +43,24 @@ class UserModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    /**
+     * Obtener un array plano con las claves de permiso del usuario
+     * Ejemplo retorno: ['vinilos.view', 'vinilos.create', 'users.edit']
+     */
+    public function getPermissions(int $userId): array
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('user_roles')
+            // Cambia 'role_id' por el nombre real que tenga en tu tabla 'rol_permiso' (ej. 'rol_id')
+            ->join('rol_permiso', 'rol_permiso.rol_id = user_roles.role_id')
+            ->join('permisos', 'permisos.id = rol_permiso.permiso_id')
+            ->select('permisos.clave')
+            ->where('user_roles.user_id', $userId)
+            ->groupBy('permisos.clave');
+
+        $results = $builder->get()->getResultArray();
+
+        return array_column($results, 'clave');
+    }
 }
