@@ -1,39 +1,499 @@
-/* =================================================_
-   ESTILOS PERSONALIZADOS - VINILOS APP
+/* =================================================
+   VINILOTECA - LOGIN GLASSMORPHISM DESIGN
    ================================================= */
 
+/* Colores basados en el logo */
 :root {
-    --bg-body: #f8f9fa;
-    --sidebar-bg: #212529;
-    --sidebar-header-bg: #1b1e21;
-    --sidebar-color: #adb5bd;
-    --sidebar-hover-color: #ffffff;
-    --sidebar-active-bg: #0d6efd;
-    --topbar-bg: #ffffff;
-    --footer-bg: #ffffff;
-    --primary-color: #0d6efd;
+    /* Color principal - Naranja del vinilo */
+    --vinilo-orange: #F28C28;
+    --vinilo-orange-dark: #D9761E;
+    --vinilo-orange-light: #FFA94D;
+    
+    /* Negro del vinilo */
+    --vinilo-black: #1a1a1a;
+    --vinilo-dark: #2d2d2d;
+    
+    /* Modo Claro (Por defecto) */
+    --bg-body: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --input-bg: rgba(248, 249, 250, 0.8);
+    --input-border: rgba(0, 0, 0, 0.1);
+    --input-focus-border: var(--vinilo-orange);
+    --btn-gradient-start: var(--vinilo-orange);
+    --btn-gradient-end: var(--vinilo-orange-dark);
+    --alert-bg: rgba(220, 53, 69, 0.1);
+    --alert-border: rgba(220, 53, 69, 0.3);
+    --alert-text: #dc3545;
+    --link-color: var(--vinilo-orange);
+    --link-hover: var(--vinilo-orange-dark);
 }
 
-body {
-    background-color: var(--bg-body);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+/* Modo Oscuro - Actualizado con colores del logo azul */
+[data-theme="dark"] {
+    /* Color principal - Azul del vinilo oscuro */
+    --vinilo-orange: #2E86DE;           /* Azul brillante del centro */
+    --vinilo-orange-dark: #1B6BB5;       /* Azul más oscuro */
+    --vinilo-orange-light: #5FA3E8;      /* Azul más claro */
+    
+    --bg-body: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    --glass-bg: rgba(20, 30, 40, 0.85);
+    --glass-border: rgba(46, 134, 222, 0.15);  /* Borde con tinte azul */
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --input-bg: rgba(30, 40, 50, 0.8);
+    --input-border: rgba(46, 134, 222, 0.2);   /* Borde input con tinte azul */
+    --input-focus-border: var(--vinilo-orange-light);
+    --alert-bg: rgba(220, 53, 69, 0.15);
+    --alert-border: rgba(220, 53, 69, 0.4);
+    --alert-text: #ff6b6b;
+    --link-color: var(--vinilo-orange-light);
+    --link-hover: var(--vinilo-orange);
+    
+    /* Ajustes específicos para el header del login */
+    --login-header-bg: linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.05) 100%);
+}
+
+/* Actualizar el header del login en modo oscuro */
+[data-theme="dark"] .login-header {
+    background: var(--login-header-bg);
+}
+
+/* Actualizar el gradiente del título */
+[data-theme="dark"] .login-title {
+    background: linear-gradient(135deg, var(--vinilo-orange-light) 0%, var(--vinilo-orange) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Actualizar sombra del botón en modo oscuro */
+[data-theme="dark"] .btn-login {
+    box-shadow: 0 4px 15px rgba(46, 134, 222, 0.4);
+}
+
+[data-theme="dark"] .btn-login:hover {
+    box-shadow: 0 6px 20px rgba(46, 134, 222, 0.5);
+}
+
+/* Actualizar focus de inputs en modo oscuro */
+[data-theme="dark"] .input-custom:focus {
+    box-shadow: 0 0 0 4px rgba(46, 134, 222, 0.15);
 }
 
 /* =================================================
-   ESTILO ESPECÍFICOS PARA AUTH (LOGIN / REGISTER)
+   ESTILOS ESPECÍFICOS PARA AUTH (LOGIN / REGISTER)
    ================================================= */
 body.auth-body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
-    background-color: var(--bg-body);
+    background: var(--bg-body);
+    background-attachment: fixed;
+    padding: 20px;
+    transition: background 0.3s ease;
 }
+
+/* Asegura que el contenedor ocupe el ancho completo */
+body.auth-body .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Contenedor del login */
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tarjeta Glassmorphism */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+/* Header con Logo */
+.login-header {
+    text-align: center;
+    padding: 40px 30px 30px;
+    background: linear-gradient(135deg, rgba(242, 140, 40, 0.1) 0%, rgba(242, 140, 40, 0.05) 100%);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.logo-container {
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+/* Halo blanco detrás del logo */
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 140px;
+    background: rgba(255, 255, 255, 0.5); /* ← Más transparente */
+    border-radius: 50%;
+    z-index: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .logo-container::before {
+    background: rgba(20, 25, 35, 0.5); /* ← Más transparente en oscuro */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.vinilo-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    animation: rotateVinilo 20s linear infinite;
+    animation-play-state: running; /* ← CAMBIADO: siempre girando */
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes rotateVinilo {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+    background: linear-gradient(135deg, var(--vinilo-orange) 0%, var(--vinilo-orange-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Body del formulario */
+.login-body {
+    padding: 35px 30px;
+}
+
+/* Alertas personalizadas */
+.alert-custom {
+    background: var(--alert-bg);
+    border: 1px solid var(--alert-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--alert-text);
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Grupos de input */
+.input-group-custom {
+    margin-bottom: 25px;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-custom {
+    width: 100%;
+    padding: 14px 45px 14px 16px;
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.input-custom::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.input-custom:focus {
+    border-color: var(--input-focus-border);
+    background: var(--input-bg);
+    box-shadow: 0 0 0 4px rgba(242, 140, 40, 0.1);
+}
+
+.input-custom.input-error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+}
+
+.input-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.error-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Opciones de login */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.remember-me input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--input-border);
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.remember-me input[type="checkbox"]:checked + .checkmark {
+    background: var(--vinilo-orange);
+    border-color: var(--vinilo-orange);
+}
+
+.remember-me input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.forgot-password {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+/* Botón de login */
+.btn-login {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--btn-gradient-start) 0%, var(--btn-gradient-end) 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(242, 140, 40, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(242, 140, 40, 0.5);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login i {
+    transition: transform 0.3s ease;
+}
+
+.btn-login:hover i {
+    transform: translateX(5px);
+}
+
+/* Footer */
+.login-footer {
+    padding: 25px 30px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid var(--glass-border);
+}
+
+.login-footer p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.register-link {
+    color: var(--link-color);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+/* Botón de tema flotante */
+.auth-theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1060;
+}
+
+.btn-theme-toggle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+}
+
+.btn-theme-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .login-container {
+        max-width: 100%;
+    }
+    
+    .login-header {
+        padding: 30px 20px 25px;
+    }
+    
+    .vinilo-logo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .login-title {
+        font-size: 1.6rem;
+    }
+    
+    .login-body {
+        padding: 25px 20px;
+    }
+    
+    .login-footer {
+        padding: 20px;
+    }
+    
+    .login-options {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+}
+
+/* =================================================
+   RESTO DE TUS ESTILOS EXISTENTES (Sidebar, Topbar, etc.)
+   ================================================= */
 
 /* Estilos del Sidebar */
 #sidebar {
@@ -43,9 +503,10 @@ body.auth-body {
     left: 0;
     height: 100%;
     background: var(--sidebar-bg);
-    color: #fff;
+    color: var(--sidebar-color);
     transition: all 0.3s;
     z-index: 1050;
+    border-right: 1px solid var(--border-color);
 }
 
 #sidebar .sidebar-header {
@@ -53,6 +514,8 @@ body.auth-body {
     background: var(--sidebar-header-bg);
     font-weight: bold;
     font-size: 1.1rem;
+    color: var(--sidebar-hover-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 #sidebar ul.components {
@@ -91,11 +554,13 @@ body.auth-body {
 .topbar {
     height: 60px;
     background: var(--topbar-bg);
-    border-bottom: 1px solid #dee2e6;
+    color: var(--topbar-color);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Contenido dinámico */
@@ -107,11 +572,12 @@ body.auth-body {
 /* Footer fijo abajo */
 footer {
     background: var(--footer-bg);
-    border-top: 1px solid #dee2e6;
+    color: var(--footer-color);
+    border-top: 1px solid var(--border-color);
     padding: 15px 20px;
     text-align: center;
     font-size: 0.9rem;
-    color: #6c757d;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Responsive */
@@ -141,4 +607,106 @@ footer {
     border-color: #dc3545 !important;
     padding-right: calc(1.5em + 0.75rem) !important;
     background-image: none !important; /* Quita el icono feo del navegador/bootstrap */
+}
+
+/* Posición fija para el botón de tema en las vistas de Login y Register */
+.auth-theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1060;
+}
+
+/* Hint de contraseña en registro */
+.password-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Sección de reenvío de verificación */
+.resend-verification-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--input-border);
+    text-align: center;
+}
+
+.resend-verification-section p {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.btn-resend {
+    background: transparent;
+    border: 2px dashed var(--input-border);
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-resend:hover {
+    border-color: var(--vinilo-orange);
+    color: var(--vinilo-orange);
+    background: rgba(242, 140, 40, 0.05);
+}
+
+.btn-resend:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Alerta de éxito personalizada */
+.alert-success-custom {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+[data-theme="dark"] .alert-success-custom {
+    color: #51cf66;
+    background: rgba(81, 207, 102, 0.1);
+    border-color: rgba(81, 207, 102, 0.3);
+}
+
+/* Modal de recuperación con estilo glassmorphism */
+.glass-card-modal {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+    color: var(--text-primary);
+}
+
+.glass-card-modal .modal-header {
+    background: transparent;
+    padding-bottom: 0;
+}
+
+.glass-card-modal .modal-title {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.glass-card-modal .btn-close {
+    filter: var(--btn-close-filter, none);
+}
+
+[data-theme="dark"] .glass-card-modal .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.glass-card-modal .text-muted {
+    color: var(--text-secondary) !important;
 }

@@ -1,70 +1,95 @@
 <?= $this->extend('layouts/auth') ?>
 
-<?= $this->section('title') ?>Registro de Usuario<?= $this->endSection() ?>
+<?= $this->section('title') ?>Registro - <?= env('app.name', 'Viniloteca') ?><?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="row justify-content-center w-100">
-    <div class="col-md-8 col-lg-7 col-xl-7 col-xxl-5">
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
-                <h4 class="mb-0"><i class="fa-solid fa-user-plus me-2"></i>Crear Cuenta</h4>
-                <p class="text-white-50 small mb-0 mt-1">Únete a nuestra plataforma de vinilos</p>
+<div class="login-container">
+    <div class="glass-card">
+        <!-- Logo y Header -->
+        <div class="login-header">
+            <div class="logo-container">
+                <img src="<?= base_url('assets/images/logo.png') ?>"
+                    alt="<?= env('app.name', 'Viniloteca') ?> Logo"
+                    class="vinilo-logo"
+                    data-light="<?= base_url('assets/images/logo.png') ?>"
+                    data-dark="<?= base_url('assets/images/logo-dark.png') ?>">
             </div>
-            <div class="card-body p-4">
-                <div id="register-alert" class="alert alert-danger d-none" role="alert"></div>
+            <h1 class="login-title"><?= env('app.name', 'Viniloteca') ?></h1>
+            <p class="login-subtitle">Únete a nuestra plataforma de vinilos</p>
+        </div>
 
-                <form id="form-register" novalidate>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nombre Completo</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-user text-muted"></i></span>
-                            <input type="text" id="reg-nombre" class="form-control" placeholder="Tu nombre completo">
-                        </div>
-                        <small id="error-nombre" class="text-danger fw-semibold mt-1" style="display: none;"></small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Correo Electrónico</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-envelope text-muted"></i></span>
-                            <input type="email" id="reg-email" class="form-control" placeholder="Correo electrónico">
-                        </div>
-                        <small id="error-email" class="text-danger fw-semibold mt-1" style="display: none;"></small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Contraseña</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-key text-muted"></i></span>
-                            <input type="password" id="reg-password" class="form-control" placeholder="Contraseña">
-                        </div>
-                        <small id="error-password" class="text-danger fw-semibold mt-1" style="display: none;"></small>
-                        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Mín. 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Confirmar Contraseña</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-key text-muted"></i></span>
-                            <input type="password" id="reg-password-confirm" class="form-control" placeholder="Confirmar Contraseña">
-                        </div>
-                        <small id="error-password-confirm" class="text-danger fw-semibold mt-1" style="display: none;"></small>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
-                        <i class="fa-solid fa-check me-1"></i> Registrarse
-                    </button>
-                </form>
+        <!-- Formulario -->
+        <div class="login-body">
+            <div id="register-alert" class="alert-custom d-none" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <span class="alert-message"></span>
             </div>
-            <div class="card-footer text-center py-3 bg-light rounded-bottom-4">
-                <small class="text-muted">¿Ya tienes una cuenta? <a href="<?= site_url('login') ?>" class="text-decoration-none fw-semibold">Inicia sesión aquí</a></small>
-            </div>
+
+            <form id="form-register" novalidate>
+                <!-- Nombre Completo -->
+                <div class="input-group-custom">
+                    <label class="input-label" for="reg-nombre">
+                        <i class="fa-solid fa-user me-2"></i>Nombre Completo
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="reg-nombre" class="input-custom" placeholder="Tu nombre completo" autocomplete="name">
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                    <small id="error-nombre" class="error-text d-none"></small>
+                </div>
+
+                <!-- Correo Electrónico -->
+                <div class="input-group-custom">
+                    <label class="input-label" for="reg-email">
+                        <i class="fa-solid fa-envelope me-2"></i>Correo Electrónico
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="email" id="reg-email" class="input-custom" placeholder="tu@email.com" autocomplete="email">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                    </div>
+                    <small id="error-email" class="error-text d-none"></small>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="input-group-custom">
+                    <label class="input-label" for="reg-password">
+                        <i class="fa-solid fa-lock me-2"></i>Contraseña
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="reg-password" class="input-custom" placeholder="••••••••" autocomplete="new-password">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                    </div>
+                    <small id="error-password" class="error-text d-none"></small>
+                    <small class="password-hint">Mín. 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial.</small>
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="input-group-custom">
+                    <label class="input-label" for="reg-password-confirm">
+                        <i class="fa-solid fa-key me-2"></i>Confirmar Contraseña
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="reg-password-confirm" class="input-custom" placeholder="••••••••" autocomplete="new-password">
+                        <i class="fa-solid fa-key input-icon"></i>
+                    </div>
+                    <small id="error-password-confirm" class="error-text d-none"></small>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <span>Registrarse</span>
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>¿Ya tienes una cuenta? <a href="<?= site_url('login') ?>" class="register-link">Inicia sesión aquí</a></p>
         </div>
     </div>
 </div>
 <?= $this->endSection() ?>
 
-<!-- Llamamos al script externo de registro -->
 <?= $this->section('scripts') ?>
 <script src="<?= base_url('assets/js/auth-register.js') ?>"></script>
 <?= $this->endSection() ?>

@@ -39,7 +39,15 @@ services:
       - dbdata:/var/lib/mysql
     networks:
       - vinil_network
-
+  mailpit:
+      image: axllent/mailpit:latest
+      container_name: vinilos_mailpit
+      ports:
+        - "1027:1025"
+        - "8027:8025"
+      restart: unless-stopped
+      networks:       
+        - vinil_network
 networks:
   vinil_network:
     driver: bridge

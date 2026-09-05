@@ -24,6 +24,14 @@ $routes->options('auth/login', static function () {
 });
 $routes->post('auth/register', 'AuthController::register');
 $routes->post('auth/login',    'AuthController::login');
+$routes->get('auth/verify', 'AuthController::verify');
+$routes->post('auth/resend-verification', 'AuthController::resendVerification');
+$routes->post('auth/forgot-password', 'AuthController::forgotPassword');
+$routes->get('auth/reset-password', 'AuthController::verifyResetToken');
+$routes->post('auth/reset-password', 'AuthController::resetPassword');
+
+
+
 
 // --- Consulta Pública de Vinilos ---
 $routes->get('vinilos',        'ViniloController::index');

@@ -16,6 +16,9 @@ class UserModel extends Model
         'password',
         'email_verified',
         'verification_token',
+        'verification_token_expires_at',
+        'reset_token',
+        'reset_token_expires_at',
     ];
 
     protected $useTimestamps = true;

@@ -20,12 +20,21 @@ class ProfileController extends BaseController
      */
     public function index(): ResponseInterface
     {
-        // El ID del usuario autenticado fue inyectado en la request por el PermissionFilter
-        $userId = $this->request->user_id;
+        // El usuario autenticado fue inyectado en la request por el PermissionFilter
+        $user = $this->request->user ?? null;
 
-        $user = $this->userModel->find($userId);
+        if (!$user || !isset($user->id)) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 401,
+                'error'   => 'Usuario no autenticado'
+            ]);
+        }
 
-        if (!$user) {
+        $userId = $user->id;
+
+        $userData = $this->userModel->find($userId);
+
+        if (!$userData) {
             return $this->response->setStatusCode(404)->setJSON([
                 'status'  => 404,
                 'error'   => 'Usuario no encontrado'
@@ -35,12 +44,12 @@ class ProfileController extends BaseController
         // Obtener permisos del usuario
         $permisos = $this->userModel->getPermissions($userId);
 
-        unset($user['password']);
+        unset($userData['password']);
 
         return $this->response->setStatusCode(200)->setJSON([
             'status' => 200,
             'data'   => [
-                'usuario'  => $user,
+                'usuario'  => $userData,
                 'permisos' => $permisos
             ]
         ]);
@@ -52,7 +61,15 @@ class ProfileController extends BaseController
      */
     public function update(): ResponseInterface
     {
-        $userId = $this->request->user_id;
+        $user = $this->request->user ?? null;
+        if (!$user || !isset($user->id)) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 401,
+                'error'   => 'Usuario no autenticado'
+            ]);
+        }
+        $userId = $user->id;
+
         $input  = $this->request->getJSON(true) ?? $this->request->getRawInput();
 
         $rules = [
@@ -88,7 +105,15 @@ class ProfileController extends BaseController
      */
     public function cambiarPassword(): ResponseInterface
     {
-        $userId = $this->request->user_id;
+        $user = $this->request->user ?? null;
+        if (!$user || !isset($user->id)) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status'  => 401,
+                'error'   => 'Usuario no autenticado'
+            ]);
+        }
+        $userId = $user->id;
+
         $input  = $this->request->getJSON(true) ?? $this->request->getRawInput();
 
         $rules = [
@@ -103,10 +128,10 @@ class ProfileController extends BaseController
             ]);
         }
 
-        $user = $this->userModel->find($userId);
+        $userData = $this->userModel->find($userId);
 
         // Verificar la contraseña actual
-        if (!password_verify($input['password_actual'], $user['password'])) {
+        if (!password_verify($input['password_actual'], $userData['password'])) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status' => 401,
                 'error'  => 'La contraseña actual no es correcta'
