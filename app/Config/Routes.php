@@ -45,10 +45,22 @@ $routes->delete('vinilos/(:num)',       'ViniloController::delete/$1',       ['f
 $routes->post('vinilos/(:num)/fotos',   'ViniloController::agregarFotos/$1', ['filter' => 'permission:vinilos.create']);
 $routes->delete('vinilos/fotos/(:num)', 'ViniloController::eliminarFoto/$1', ['filter' => 'permission:vinilos.delete']);
 
-// --- Rutas de Perfil Propio ---
-$routes->get('perfil',                  'ProfileController::index',           ['filter' => 'permission:perfil.view']);
-$routes->put('perfil',                  'ProfileController::update',          ['filter' => 'permission:perfil.edit']);
-$routes->put('perfil/cambiar-password', 'ProfileController::cambiarPassword', ['filter' => 'permission:perfil.edit']);
+$routes->group('perfil', ['filter' => 'jwt'], function ($routes) {
+    // Vista HTML
+    $routes->get('/', 'ProfileController::index');
+
+    // Formularios HTML
+    $routes->post('update', 'ProfileController::update');
+    $routes->post('check-email', 'ProfileController::checkEmail'); // ← AGREGAR ESTA
+    $routes->post('cambiar-password', 'ProfileController::cambiarPassword');
+    $routes->post('upload-avatar', 'ProfileController::uploadAvatar');
+    $routes->post('eliminar', 'ProfileController::eliminar');
+
+    // API JSON (para AJAX)
+    $routes->get('api', 'ProfileController::getProfile');
+    $routes->put('api', 'ProfileController::updateApi');
+    $routes->put('api/cambiar-password', 'ProfileController::cambiarPasswordApi');
+});
 
 // --- Rutas de Gestión de Usuarios (API) ---
 $routes->group('usuarios', ['filter' => 'permission:usuarios.view'], static function ($routes) {
@@ -69,3 +81,5 @@ $routes->group('roles', ['filter' => 'permission:roles.view'], static function (
     $routes->delete('(:num)',         'RoleController::delete/$1',           ['filter' => 'permission:roles.delete']);
     $routes->post('(:num)/permisos',  'RoleController::syncPermissions/$1',  ['filter' => 'permission:roles.edit']);
 });
+
+$routes->post('auth/logout', 'AuthController::logout');

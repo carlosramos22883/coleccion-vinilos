@@ -1,92 +1,150 @@
 /* =================================================
-   VINILOTECA - LOGIN GLASSMORPHISM DESIGN
+   VINILOTECA - ESTILOS GLOBALES
    ================================================= */
 
-/* Colores basados en el logo */
+/* =================================================
+   1. VARIABLES CSS - TEMA CLARO (POR DEFECTO)
+   ================================================= */
 :root {
-    /* Color principal - Naranja del vinilo */
+    /* Colores de marca (basados en el logo) */
     --vinilo-orange: #F28C28;
     --vinilo-orange-dark: #D9761E;
     --vinilo-orange-light: #FFA94D;
-    
-    /* Negro del vinilo */
     --vinilo-black: #1a1a1a;
     --vinilo-dark: #2d2d2d;
-    
-    /* Modo Claro (Por defecto) */
-    --bg-body: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    /* Fondo del body */
+    --bg-body: #f8f9fa;
+
+    /* Sidebar - MODO CLARO */
+    --sidebar-bg: #ffffff;
+    --sidebar-header-bg: #f8f9fa;
+    --sidebar-color: #495057;
+    --sidebar-hover-color: #212529;
+    --sidebar-active-bg: rgba(242, 140, 40, 0.1);
+
+    /* Topbar */
+    --topbar-bg: #ffffff;
+    --topbar-color: #212529;
+
+    /* Footer */
+    --footer-bg: #ffffff;
+    --footer-color: #6c757d;
+
+    /* Cards y contenedores */
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+
+    /* Textos */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-color: #212529;
+
+    /* Glassmorphism (Login) */
     --glass-bg: rgba(255, 255, 255, 0.95);
     --glass-border: rgba(255, 255, 255, 0.2);
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    --text-primary: #212529;
-    --text-secondary: #6c757d;
+
+    /* Inputs */
     --input-bg: rgba(248, 249, 250, 0.8);
     --input-border: rgba(0, 0, 0, 0.1);
     --input-focus-border: var(--vinilo-orange);
+
+    /* Botones */
     --btn-gradient-start: var(--vinilo-orange);
     --btn-gradient-end: var(--vinilo-orange-dark);
+
+    /* Alertas */
     --alert-bg: rgba(220, 53, 69, 0.1);
     --alert-border: rgba(220, 53, 69, 0.3);
     --alert-text: #dc3545;
+
+    /* Links */
     --link-color: var(--vinilo-orange);
     --link-hover: var(--vinilo-orange-dark);
-}
 
-/* Modo Oscuro - Actualizado con colores del logo azul */
-[data-theme="dark"] {
-    /* Color principal - Azul del vinilo oscuro */
-    --vinilo-orange: #2E86DE;           /* Azul brillante del centro */
-    --vinilo-orange-dark: #1B6BB5;       /* Azul más oscuro */
-    --vinilo-orange-light: #5FA3E8;      /* Azul más claro */
-    
-    --bg-body: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-    --glass-bg: rgba(20, 30, 40, 0.85);
-    --glass-border: rgba(46, 134, 222, 0.15);  /* Borde con tinte azul */
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-    --text-primary: #e9ecef;
-    --text-secondary: #adb5bd;
-    --input-bg: rgba(30, 40, 50, 0.8);
-    --input-border: rgba(46, 134, 222, 0.2);   /* Borde input con tinte azul */
-    --input-focus-border: var(--vinilo-orange-light);
-    --alert-bg: rgba(220, 53, 69, 0.15);
-    --alert-border: rgba(220, 53, 69, 0.4);
-    --alert-text: #ff6b6b;
-    --link-color: var(--vinilo-orange-light);
-    --link-hover: var(--vinilo-orange);
-    
-    /* Ajustes específicos para el header del login */
-    --login-header-bg: linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.05) 100%);
-}
-
-/* Actualizar el header del login en modo oscuro */
-[data-theme="dark"] .login-header {
-    background: var(--login-header-bg);
-}
-
-/* Actualizar el gradiente del título */
-[data-theme="dark"] .login-title {
-    background: linear-gradient(135deg, var(--vinilo-orange-light) 0%, var(--vinilo-orange) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Actualizar sombra del botón en modo oscuro */
-[data-theme="dark"] .btn-login {
-    box-shadow: 0 4px 15px rgba(46, 134, 222, 0.4);
-}
-
-[data-theme="dark"] .btn-login:hover {
-    box-shadow: 0 6px 20px rgba(46, 134, 222, 0.5);
-}
-
-/* Actualizar focus de inputs en modo oscuro */
-[data-theme="dark"] .input-custom:focus {
-    box-shadow: 0 0 0 4px rgba(46, 134, 222, 0.15);
+    /* Modal close button */
+    --btn-close-filter: none;
 }
 
 /* =================================================
-   ESTILOS ESPECÍFICOS PARA AUTH (LOGIN / REGISTER)
+   2. VARIABLES CSS - TEMA OSCURO
+   ================================================= */
+[data-theme="dark"] {
+    /* Colores de marca (basados en el logo azul) */
+    --vinilo-orange: #2E86DE;
+    --vinilo-orange-dark: #1B6BB5;
+    --vinilo-orange-light: #5FA3E8;
+
+    /* Fondo del body */
+    --bg-body: #121212;
+
+    /* Sidebar - MODO OSCURO */
+    --sidebar-bg: #1a1d20;
+    --sidebar-header-bg: #111315;
+    --sidebar-color: #949da5;
+    --sidebar-hover-color: #ffffff;
+    --sidebar-active-bg: rgba(46, 134, 222, 0.2);
+
+    /* Topbar */
+    --topbar-bg: #1a1d20;
+    --topbar-color: #f8f9fa;
+
+    /* Footer */
+    --footer-bg: #1a1d20;
+    --footer-color: #949da5;
+
+    /* Cards y contenedores */
+    --card-bg: #1e2227;
+    --border-color: #2c3238;
+
+    /* Textos */
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --text-color: #e9ecef;
+
+    /* Glassmorphism (Login) */
+    --glass-bg: rgba(20, 30, 40, 0.85);
+    --glass-border: rgba(46, 134, 222, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+
+    /* Inputs */
+    --input-bg: rgba(30, 40, 50, 0.8);
+    --input-border: rgba(46, 134, 222, 0.2);
+    --input-focus-border: var(--vinilo-orange-light);
+
+    /* Alertas */
+    --alert-bg: rgba(220, 53, 69, 0.15);
+    --alert-border: rgba(220, 53, 69, 0.4);
+    --alert-text: #ff6b6b;
+
+    /* Links */
+    --link-color: var(--vinilo-orange-light);
+    --link-hover: var(--vinilo-orange);
+
+    /* Modal close button */
+    --btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+
+    /* Header del login en modo oscuro */
+    --login-header-bg: linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.05) 100%);
+}
+
+/* =================================================
+   3. ESTILOS BASE
+   ================================================= */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =================================================
+   4. AUTH (LOGIN / REGISTER)
    ================================================= */
 body.auth-body {
     display: flex;
@@ -94,13 +152,16 @@ body.auth-body {
     justify-content: center;
     min-height: 100vh;
     margin: 0;
-    background: var(--bg-body);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-attachment: fixed;
     padding: 20px;
     transition: background 0.3s ease;
 }
 
-/* Asegura que el contenedor ocupe el ancho completo */
+[data-theme="dark"] body.auth-body {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+}
+
 body.auth-body .container {
     display: flex;
     justify-content: center;
@@ -152,13 +213,17 @@ body.auth-body .container {
     border-bottom: 1px solid var(--glass-border);
 }
 
+[data-theme="dark"] .login-header {
+    background: var(--login-header-bg);
+}
+
 .logo-container {
     margin-bottom: 20px;
     position: relative;
     display: inline-block;
 }
 
-/* Halo blanco detrás del logo */
+/* Halo detrás del logo */
 .logo-container::before {
     content: '';
     position: absolute;
@@ -167,14 +232,14 @@ body.auth-body .container {
     transform: translate(-50%, -50%);
     width: 140px;
     height: 140px;
-    background: rgba(255, 255, 255, 0.5); /* ← Más transparente */
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
     z-index: 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] .logo-container::before {
-    background: rgba(20, 25, 35, 0.5); /* ← Más transparente en oscuro */
+    background: rgba(20, 25, 35, 0.5);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -184,19 +249,15 @@ body.auth-body .container {
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
     animation: rotateVinilo 20s linear infinite;
-    animation-play-state: running; /* ← CAMBIADO: siempre girando */
+    animation-play-state: running;
     transition: transform 0.3s ease;
     position: relative;
     z-index: 1;
 }
 
 @keyframes rotateVinilo {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .login-title {
@@ -205,6 +266,13 @@ body.auth-body .container {
     color: var(--text-primary);
     margin: 0 0 8px 0;
     background: linear-gradient(135deg, var(--vinilo-orange) 0%, var(--vinilo-orange-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="dark"] .login-title {
+    background: linear-gradient(135deg, var(--vinilo-orange-light) 0%, var(--vinilo-orange) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -240,6 +308,61 @@ body.auth-body .container {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
+}
+
+.alert-success-custom {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+[data-theme="dark"] .alert-success-custom {
+    color: #51cf66;
+    background: rgba(81, 207, 102, 0.1);
+    border-color: rgba(81, 207, 102, 0.3);
+}
+
+/* =================================================
+   12. SWEETALERT - MODO OSCURO
+   ================================================= */
+[data-theme="dark"] .swal2-popup {
+    background: var(--sidebar-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .swal2-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .swal2-content {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .swal2-input,
+[data-theme="dark"] .swal2-textarea {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .swal2-confirm {
+    background: var(--vinilo-orange) !important;
+}
+
+[data-theme="dark"] .swal2-cancel {
+    background: var(--sidebar-header-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .swal2-icon {
+    background: var(--sidebar-header-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .swal2-close {
+    color: var(--text-primary);
 }
 
 /* Grupos de input */
@@ -282,6 +405,10 @@ body.auth-body .container {
     box-shadow: 0 0 0 4px rgba(242, 140, 40, 0.1);
 }
 
+[data-theme="dark"] .input-custom:focus {
+    box-shadow: 0 0 0 4px rgba(46, 134, 222, 0.15);
+}
+
 .input-custom.input-error {
     border-color: #dc3545;
     box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
@@ -303,6 +430,15 @@ body.auth-body .container {
     color: #dc3545;
     margin-top: 6px;
     font-weight: 500;
+}
+
+.password-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    font-style: italic;
+    opacity: 0.8;
 }
 
 /* Opciones de login */
@@ -383,9 +519,17 @@ body.auth-body .container {
     transition: all 0.3s ease;
 }
 
+[data-theme="dark"] .btn-login {
+    box-shadow: 0 4px 15px rgba(46, 134, 222, 0.4);
+}
+
 .btn-login:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(242, 140, 40, 0.5);
+}
+
+[data-theme="dark"] .btn-login:hover {
+    box-shadow: 0 6px 20px rgba(46, 134, 222, 0.5);
 }
 
 .btn-login:active {
@@ -400,7 +544,7 @@ body.auth-body .container {
     transform: translateX(5px);
 }
 
-/* Footer */
+/* Footer del login */
 .login-footer {
     padding: 25px 30px;
     text-align: center;
@@ -457,176 +601,6 @@ body.auth-body .container {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-    .login-container {
-        max-width: 100%;
-    }
-    
-    .login-header {
-        padding: 30px 20px 25px;
-    }
-    
-    .vinilo-logo {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .login-title {
-        font-size: 1.6rem;
-    }
-    
-    .login-body {
-        padding: 25px 20px;
-    }
-    
-    .login-footer {
-        padding: 20px;
-    }
-    
-    .login-options {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
-}
-
-/* =================================================
-   RESTO DE TUS ESTILOS EXISTENTES (Sidebar, Topbar, etc.)
-   ================================================= */
-
-/* Estilos del Sidebar */
-#sidebar {
-    width: 260px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: var(--sidebar-bg);
-    color: var(--sidebar-color);
-    transition: all 0.3s;
-    z-index: 1050;
-    border-right: 1px solid var(--border-color);
-}
-
-#sidebar .sidebar-header {
-    padding: 20px;
-    background: var(--sidebar-header-bg);
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: var(--sidebar-hover-color);
-    border-bottom: 1px solid var(--border-color);
-}
-
-#sidebar ul.components {
-    padding: 20px 0;
-}
-
-#sidebar ul li a {
-    padding: 12px 20px;
-    display: block;
-    color: var(--sidebar-color);
-    text-decoration: none;
-    transition: 0.2s;
-}
-
-#sidebar ul li a:hover,
-#sidebar ul li.active a {
-    color: var(--sidebar-hover-color);
-    background: var(--sidebar-active-bg);
-}
-
-#sidebar ul li a i {
-    margin-right: 10px;
-}
-
-/* Contenido principal desplazable */
-#content-wrapper {
-    width: calc(100% - 260px);
-    margin-left: 260px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    transition: all 0.3s;
-}
-
-/* Topbar */
-.topbar {
-    height: 60px;
-    background: var(--topbar-bg);
-    color: var(--topbar-color);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Contenido dinámico */
-.main-container {
-    flex: 1;
-    padding: 30px;
-}
-
-/* Footer fijo abajo */
-footer {
-    background: var(--footer-bg);
-    color: var(--footer-color);
-    border-top: 1px solid var(--border-color);
-    padding: 15px 20px;
-    text-align: center;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -260px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #content-wrapper {
-        width: 100%;
-        margin-left: 0;
-    }
-    #content-wrapper.active {
-        margin-left: 260px;
-    }
-}
-
-/* Forzar que el mensaje de error aparezca debajo del input cuando tenga la clase is-invalid */
-.form-control.is-invalid ~ .invalid-feedback {
-    display: block !important;
-}
-
-/* Estilo personalizado de error para evitar conflictos con Bootstrap */
-.input-error {
-    border-color: #dc3545 !important;
-    padding-right: calc(1.5em + 0.75rem) !important;
-    background-image: none !important; /* Quita el icono feo del navegador/bootstrap */
-}
-
-/* Posición fija para el botón de tema en las vistas de Login y Register */
-.auth-theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1060;
-}
-
-/* Hint de contraseña en registro */
-.password-hint {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-top: 6px;
-    font-style: italic;
-    opacity: 0.8;
-}
-
 /* Sección de reenvío de verificación */
 .resend-verification-section {
     margin-top: 25px;
@@ -665,20 +639,506 @@ footer {
     cursor: not-allowed;
 }
 
-/* Alerta de éxito personalizada */
-.alert-success-custom {
-    background: rgba(40, 167, 69, 0.1);
-    border-color: rgba(40, 167, 69, 0.3);
-    color: #28a745;
+/* =================================================
+   5. SIDEBAR Y LAYOUT PRINCIPAL
+   ================================================= */
+#sidebar {
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-color);
+    transition: transform 0.3s ease;
+    z-index: 1050;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    /* CAMBIO: Oculto por defecto en TODAS las resoluciones */
+    transform: translateX(-260px);
 }
 
-[data-theme="dark"] .alert-success-custom {
-    color: #51cf66;
-    background: rgba(81, 207, 102, 0.1);
-    border-color: rgba(81, 207, 102, 0.3);
+#sidebar.expanded {
+    transform: translateX(0);
 }
 
-/* Modal de recuperación con estilo glassmorphism */
+/* En móvil: comportamiento igual */
+@media (max-width: 768px) {
+    #sidebar {
+        transform: translateX(-260px);
+    }
+    #sidebar.expanded {
+        transform: translateX(0);
+    }
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: var(--sidebar-header-bg);
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--sidebar-hover-color);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    margin: 0;
+    list-style: none;
+}
+
+#sidebar ul li a {
+    padding: 12px 20px;
+    display: block;
+    color: var(--sidebar-color);
+    text-decoration: none;
+    transition: 0.2s;
+    border-left: 3px solid transparent;
+}
+
+#sidebar ul li a:hover {
+    color: var(--sidebar-hover-color);
+    background: var(--sidebar-active-bg);
+    border-left-color: var(--vinilo-orange);
+}
+
+#sidebar ul li.active a {
+    color: var(--sidebar-hover-color);
+    background: var(--sidebar-active-bg);
+    border-left-color: var(--vinilo-orange);
+    font-weight: 600;
+}
+
+#sidebar ul li a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Logo en el sidebar con halo */
+.sidebar-logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.sidebar-logo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+[data-theme="dark"] .sidebar-logo-container::before {
+    background: rgba(46, 134, 222, 0.3);
+}
+
+.sidebar-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    animation: rotateVinilo 20s linear infinite;
+    position: relative;
+    z-index: 1;
+}
+
+#content-wrapper {
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+#content-wrapper.expanded {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+}
+
+/* Responsive: móvil */
+@media (max-width: 768px) {
+    #content-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+    #content-wrapper.expanded {
+        margin-left: 0;
+    }
+}
+
+/* =================================================
+   11. SIDEBAR USER INFO
+   ================================================= */
+.sidebar-user-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--sidebar-header-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar-wrapper {
+    flex-shrink: 0;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--vinilo-orange);
+}
+
+.user-details {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--sidebar-hover-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-email {
+    font-size: 0.75rem;
+    color: var(--sidebar-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.user-action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: var(--sidebar-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.user-action-btn:hover {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-hover-color);
+}
+
+.user-action-btn.text-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+/* Botón de cerrar sidebar */
+.btn-close-sidebar {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--sidebar-color);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.sidebar-header:hover .btn-close-sidebar {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-close-sidebar:hover {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-hover-color);
+}
+
+/* En móvil siempre visible */
+@media (max-width: 768px) {
+    .btn-close-sidebar {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* =================================================
+   6. TOPBAR Y FOOTER
+   ================================================= */
+.topbar {
+    height: 60px;
+    background: var(--topbar-bg);
+    color: var(--topbar-color);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+    width: 100%;
+}
+
+/* =================================================
+   13. TOPBAR - MODO OSCURO
+   ================================================= */
+
+/* Botón hamburguesa del sidebar */
+[data-theme="dark"] #sidebarCollapse {
+    background: var(--sidebar-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] #sidebarCollapse:hover {
+    background: var(--sidebar-header-bg);
+    color: var(--vinilo-orange);
+}
+
+/* Dropdown de usuario en modo oscuro */
+[data-theme="dark"] .dropdown-menu {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+    background: var(--sidebar-active-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item.text-danger {
+    color: #ff6b6b;
+}
+
+[data-theme="dark"] .dropdown-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.2);
+    color: #ff6b6b;
+}
+
+[data-theme="dark"] .dropdown-divider {
+    border-color: var(--border-color);
+}
+
+.main-container {
+    flex: 1;
+    padding: 30px;
+    min-height: calc(100vh - 60px - 60px);
+    /* Espacios laterales elegantes */
+    margin: 0 auto;
+    max-width: 1400px;
+}
+
+@media (max-width: 1600px) {
+    .main-container {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        padding: 20px;
+    }
+}
+
+footer {
+    background: var(--footer-bg);
+    color: var(--footer-color);
+    border-top: 1px solid var(--border-color);
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%;
+    margin-top: auto;
+}
+
+/* =================================================
+   7. DASHBOARD
+   ================================================= */
+.glass-card-dashboard {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .glass-card-dashboard {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card-dashboard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Welcome Card */
+.welcome-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(242, 140, 40, 0.1) 0%, rgba(242, 140, 40, 0.05) 100%);
+}
+
+[data-theme="dark"] .welcome-card {
+    background: linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.05) 100%);
+}
+
+.welcome-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 1rem;
+}
+
+.welcome-icon {
+    font-size: 3rem;
+    color: var(--vinilo-orange);
+    opacity: 0.8;
+    animation: rotateVinilo 10s linear infinite;
+}
+
+[data-theme="dark"] .welcome-icon {
+    color: var(--vinilo-orange-light);
+}
+
+/* Stat Cards */
+.stat-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    height: 100%;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 15px;
+}
+
+.bg-primary-soft { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+.bg-success-soft { background: rgba(25, 135, 84, 0.1); color: #198754; }
+.bg-warning-soft { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+.bg-info-soft { background: rgba(13, 202, 240, 0.1); color: #0dcaf0; }
+
+[data-theme="dark"] .bg-primary-soft { background: rgba(13, 110, 253, 0.2); }
+[data-theme="dark"] .bg-success-soft { background: rgba(25, 135, 84, 0.2); }
+[data-theme="dark"] .bg-warning-soft { background: rgba(255, 193, 7, 0.2); }
+[data-theme="dark"] .bg-info-soft { background: rgba(13, 202, 240, 0.2); }
+
+.stat-info { flex: 1; }
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Quick Actions Buttons */
+.btn-action {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border: none;
+}
+
+.btn-primary-custom {
+    background: var(--vinilo-orange);
+    color: white;
+}
+.btn-primary-custom:hover {
+    background: var(--vinilo-orange-dark);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-secondary-custom {
+    background: #6c757d;
+    color: white;
+}
+.btn-secondary-custom:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-custom {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+.btn-outline-custom:hover {
+    border-color: var(--vinilo-orange);
+    color: var(--vinilo-orange);
+    transform: translateY(-2px);
+}
+
+/* =================================================
+   8. MODAL DE RECUPERACIÓN
+   ================================================= */
 .glass-card-modal {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -700,13 +1160,62 @@ footer {
 }
 
 .glass-card-modal .btn-close {
-    filter: var(--btn-close-filter, none);
-}
-
-[data-theme="dark"] .glass-card-modal .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
+    filter: var(--btn-close-filter);
 }
 
 .glass-card-modal .text-muted {
     color: var(--text-secondary) !important;
+}
+
+/* =================================================
+   9. UTILIDADES Y HELPERS
+   ================================================= */
+.form-control.is-invalid ~ .invalid-feedback {
+    display: block !important;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem) !important;
+    background-image: none !important;
+}
+
+/* =================================================
+   10. RESPONSIVE
+   ================================================= */
+@media (max-width: 768px) {
+    #content-wrapper {
+        width: 100%;
+        margin-left: 0;
+    }
+    #content-wrapper.expanded {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-container {
+        max-width: 100%;
+    }
+    .login-header {
+        padding: 30px 20px 25px;
+    }
+    .vinilo-logo {
+        width: 100px;
+        height: 100px;
+    }
+    .login-title {
+        font-size: 1.6rem;
+    }
+    .login-body {
+        padding: 25px 20px;
+    }
+    .login-footer {
+        padding: 20px;
+    }
+    .login-options {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
 }

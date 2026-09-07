@@ -4,16 +4,28 @@ namespace App\Controllers;
 
 class HomeController extends BaseController
 {
-    // Vista del Dashboard / Principal
-    public function index()
-    {
-        return view('vinilos/index');
-    }
-
-    // Vistas de Autenticación
+    /**
+     * Redirigir al login si NO está autenticado
+     * O al dashboard si YA está autenticado
+     */
     public function login()
     {
+        // Verificar si ya hay token en localStorage (del lado del cliente)
+        // O verificar sesión del servidor
+        if (session()->get('jwt_token') || session()->get('isLoggedIn')) {
+            return redirect()->to('/dashboard');
+        }
+
         return view('auth/login');
+    }
+
+    /**
+     * Mostrar dashboard (solo si está autenticado)
+     */
+    public function index()
+    {
+        // El filtro JWT ya verificó la autenticación
+        return view('dashboard/index');
     }
 
     public function register()
@@ -21,7 +33,11 @@ class HomeController extends BaseController
         return view('auth/register');
     }
 
-    // Vistas de Módulos (Vistas HTML del Frontend)
+    public function vinilosView()
+    {
+        return view('vinilos/index');
+    }
+
     public function usuariosView()
     {
         return view('usuarios/index');
@@ -30,10 +46,5 @@ class HomeController extends BaseController
     public function rolesView()
     {
         return view('roles/index');
-    }
-
-    public function vinilosView()
-    {
-        return view('vinilos/index');
     }
 }

@@ -14,6 +14,7 @@ class UserModel extends Model
         'nombre',
         'email',
         'password',
+        'avatar',
         'email_verified',
         'verification_token',
         'verification_token_expires_at',
