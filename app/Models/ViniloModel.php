@@ -15,6 +15,7 @@ class ViniloModel extends Model
 
     // CAMPOS PERMITIDOS
     protected $allowedFields    = [
+        'user_id',
         'titulo',
         'artista',
         'anio_lanzamiento',

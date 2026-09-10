@@ -916,6 +916,64 @@ body.auth-body .container {
     width: 100%;
 }
 
+/* Contenedor izquierdo de la topbar (botón + logo) */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espacio entre botón y logo */
+}
+
+/* Logo en la topbar CON HALO */
+.topbar-logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.topbar-logo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    z-index: 0;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .topbar-logo-container::before {
+    background: rgba(46, 134, 222, 0.3);
+}
+
+.topbar-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    animation: rotateVinilo 20s linear infinite;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.topbar-logo:hover {
+    transform: scale(1.1);
+}
+
+/* Logo en la topbar */
+.topbar-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    animation: rotateVinilo 20s linear infinite;
+    transition: transform 0.3s ease;
+}
+
+.topbar-logo:hover {
+    transform: scale(1.1);
+}
+
 /* =================================================
    13. TOPBAR - MODO OSCURO
    ================================================= */
@@ -967,19 +1025,142 @@ body.auth-body .container {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: 24px clamp(16px, 4vw, 48px);
-    min-height: calc(100vh - 60px - 60px);
+    /* ✅ Padding inferior para que el contenido no quede tapado por el footer fijo */
+    padding-bottom: 70px; /* Altura del footer + espacio */
+    min-height: calc(100vh - 60px);
 }
 
+/* ============================================
+   FOOTER CON LOGO
+   ============================================ */
 footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: var(--footer-bg);
     color: var(--footer-color);
     border-top: 1px solid var(--border-color);
-    padding: 15px 20px;
+    padding: 12px 20px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition: background-color 0.3s ease, color 0.3s ease;
     width: 100%;
-    margin-top: auto;
+    z-index: 1030;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+[data-theme="dark"] footer {
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Logo en el footer CON HALO */
+.footer-logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.footer-logo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    z-index: 0;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .footer-logo-container::before {
+    background: rgba(46, 134, 222, 0.3);
+}
+
+.footer-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    animation: rotateVinilo 20s linear infinite;
+    opacity: 0.8;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================
+   FOOTER - RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    footer {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+        justify-content: center;
+    }
+    
+    .footer-text {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .footer-logo-container::before {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .footer-logo {
+        width: 32px;
+        height: 32px;
+    }
+    
+    /* En móvil muy pequeño, solo mostrar logo y nombre */
+    .footer-copyright {
+        display: none;
+    }
+    
+    .footer-app-name {
+        font-weight: 600;
+        color: var(--vinilo-orange);
+    }
+}
+
+@media (max-width: 480px) {
+    footer {
+        padding: 8px 12px;
+    }
+    
+    .footer-logo-container::before {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .footer-logo {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .footer-app-name {
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================
+   FOOTER FIJO - RESPONSIVE (ajustar padding)
+   ============================================ */
+@media (max-width: 768px) {
+    .main-container {
+        padding-bottom: 60px; /* Menos espacio en móvil */
+    }
 }
 
 /* =================================================
@@ -1935,4 +2116,346 @@ input[type="number"]::placeholder {
 [data-theme="dark"] .table-search input,
 [data-theme="dark"] .table-per-page select {
     border-color: var(--input-border) !important;
+}
+
+/* ============================================
+   COLUMNA DE ACCIONES STICKY (SIEMPRE VISIBLE)
+   ============================================ */
+
+/* Hacer que la columna de acciones se mantenga fija a la derecha */
+.data-table th:last-child,
+.data-table td:last-child {
+    position: sticky;
+    right: 0;
+    background: inherit;
+    z-index: 10;
+}
+
+/* Asegurar que el header tenga fondo sólido */
+.data-table thead th:last-child {
+    background: #f9fafb;
+    z-index: 20; /* Más alto que las celdas */
+}
+
+[data-theme="dark"] .data-table thead th:last-child {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Asegurar que las filas tengan fondo sólido para que no se traslape */
+.data-table tbody tr:hover td:last-child {
+    background: #f9fafb;
+}
+
+[data-theme="dark"] .data-table tbody tr:hover td:last-child {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Sombra a la izquierda de la columna sticky para indicar scroll */
+.data-table td:last-child::before,
+.data-table th:last-child::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05));
+    pointer-events: none;
+    z-index: -1;
+}
+
+[data-theme="dark"] .data-table td:last-child::before,
+[data-theme="dark"] .data-table th:last-child::before {
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.3));
+}
+
+/* Asegurar que la tabla tenga overflow horizontal */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scroll en móviles */
+}
+
+/* Botones de acción en columna sticky */
+.cell-actions {
+    position: sticky;
+    right: 0;
+    background: inherit;
+    z-index: 10;
+    padding-right: 1rem !important;
+}
+
+/* Ajustar botones para que se vean bien en móviles */
+@media (max-width: 768px) {
+    .cell-actions .btn-action {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}
+
+/* ============================================
+   COLUMNAS ORDENABLES (SORTING)
+   ============================================ */
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark"] .sortable:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.sort-icon {
+    margin-left: 8px;
+    opacity: 0.4;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+}
+
+.sortable:hover .sort-icon {
+    opacity: 0.7;
+}
+
+/* Estado activo (ordenando) */
+.sortable.active .sort-icon {
+    opacity: 1;
+    color: var(--vinilo-orange);
+}
+
+/* Íconos específicos para cada estado */
+.sortable[data-order="asc"] .sort-icon::before {
+    content: '\f0de'; /* fa-sort-up */
+}
+
+.sortable[data-order="desc"] .sort-icon::before {
+    content: '\f0dd'; /* fa-sort-down */
+}
+
+.sortable:not([data-order]) .sort-icon::before {
+    content: '\f0dc'; /* fa-sort (neutral) */
+}
+
+/* Animación suave al cambiar */
+.sort-icon {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sortable:hover .sort-icon {
+    transform: scale(1.1);
+}
+
+/* ============================================
+   NUEVA ESTRUCTURA DEL DATATABLE
+   ============================================ */
+
+/* Línea 1: Controles superiores */
+.table-controls-top {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+[data-theme="dark"] .table-controls-top {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Botón de exportar */
+.btn-export {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-export:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.export-dropdown .dropdown-menu {
+    min-width: 180px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .export-dropdown .dropdown-menu {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.export-dropdown .dropdown-item {
+    padding: 0.625rem 1rem;
+    transition: all 0.2s;
+}
+
+.export-dropdown .dropdown-item:hover {
+    background: var(--bg-body);
+}
+
+/* Línea 2: Filtros */
+.table-filters {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+[data-theme="dark"] .table-filters {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    background: white;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .search-box input {
+    background: var(--card-bg);
+    border-color: #4b5563;
+    color: white;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--vinilo-orange);
+    box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.additional-filters {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.filter-select {
+    padding: 0.625rem 2rem 0.625rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+[data-theme="dark"] .filter-select {
+    background: var(--card-bg);
+    border-color: #4b5563;
+    color: white;
+}
+
+.btn-filter-clear {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .btn-filter-clear {
+    background: var(--card-bg);
+    border-color: #4b5563;
+    color: white;
+}
+
+.btn-filter-clear:hover {
+    background: #fee2e2;
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+/* Línea 4: Paginación inferior */
+.table-pagination-bottom {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+[data-theme="dark"] .table-pagination-bottom {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-controls-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .controls-left,
+    .controls-right {
+        justify-content: space-between;
+    }
+    
+    .table-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        min-width: 100%;
+    }
+    
+    .additional-filters {
+        flex-wrap: wrap;
+    }
+    
+    .filter-select {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .table-pagination-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
 }

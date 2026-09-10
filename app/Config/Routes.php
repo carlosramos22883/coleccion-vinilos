@@ -53,6 +53,8 @@ $routes->group('api/vinilos', ['filter' => 'jwt'], function ($routes) {
     // Rutas para fotos
     $routes->post('(:num)/fotos', 'ViniloController::agregarFotos/$1', ['filter' => 'permission:vinilos.create']);
     $routes->delete('fotos/(:num)', 'ViniloController::eliminarFoto/$1', ['filter' => 'permission:vinilos.delete']);
+
+    $routes->get('export', 'ViniloController::export');
 });
 
 // --- API: USUARIOS (JSON) ---

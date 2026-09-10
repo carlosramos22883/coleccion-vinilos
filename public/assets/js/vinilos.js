@@ -8,6 +8,17 @@
     let currentModal = null;
     let currentPage = 1;
 
+    // Estado del ordenamiento
+    let currentSort = 'titulo';
+    let currentOrder = 'asc';
+
+    // Variables globales para filtros
+    let currentFilters = {
+        buscar: '',
+        formato: '',
+        estado: ''
+    };
+
     /**
      * Valida el campo de precio en tiempo real
      * - Solo permite 2 decimales
@@ -47,17 +58,26 @@
     };
 
     function cargarVinilos() {
-        const searchTerm = $('#search').val() || '';
-        const perPage = parseInt($('#per-page').val()) || 10;        
+        const perPage = parseInt($('#per-page').val()) || 10;
 
         authAjax({
             url: API_URL + 'api/vinilos',
             type: 'GET',
-            data: { buscar: searchTerm, limit: perPage, page: currentPage },
+            data: { 
+                buscar: currentFilters.buscar,
+                formato: currentFilters.formato,
+                estado: currentFilters.estado,
+                limit: perPage, 
+                page: currentPage, 
+                sort: currentSort,
+                order: currentOrder 
+            },
             success: function(response) {
                 if (response.status === 200 && response.data) {
                     renderTable(response.data);
                     renderPagination(response);
+                    updateSortIcons(response.sort, response.order);
+                    $('#total-registros').text(response.total || 0);
                 } else {
                     showErrorAlert({ title: 'Error', text: 'No se pudieron cargar los vinilos.' });
                 }
@@ -69,6 +89,41 @@
         });
     }
 
+    function updateSortIcons(sort, order) {
+        currentSort = sort;
+        currentOrder = order;
+        
+        // Resetear todos los headers
+        $('.sortable').removeClass('active').removeAttr('data-order');
+        
+        // Activar el header correspondiente
+        const $activeHeader = $(`.sortable[data-column="${sort}"]`);
+        if ($activeHeader.length) {
+            $activeHeader.addClass('active').attr('data-order', order.toLowerCase());
+        }
+    }
+
+    $(document).on('click', '.sortable', function() {
+        const column = $(this).data('column');
+        const currentOrderOnHeader = $(this).attr('data-order');
+        
+        // Determinar nuevo orden
+        let newOrder = 'asc';
+        if (currentOrderOnHeader === 'asc') {
+            newOrder = 'desc';
+        } else if (currentOrderOnHeader === 'desc') {
+            newOrder = 'asc';
+        }
+        
+        // Actualizar estado
+        currentSort = column;
+        currentOrder = newOrder;
+        currentPage = 1; // Resetear a primera página
+        
+        // Recargar datos
+        cargarVinilos();
+    });
+
     function renderTable(vinilos) {
         let html = '';
         if (vinilos.length === 0) {
@@ -78,7 +133,6 @@
                 const estadoClass = getEstadoClass(vinilo.estado_conservacion);
                 const precio = parseFloat(vinilo.precio || 0).toFixed(2);
                 
-                // ✅ Truncar textos largos (máximo 50 caracteres)
                 const tituloTruncado = truncateText(vinilo.titulo, 50);
                 const artistaTruncado = truncateText(vinilo.artista, 50);
                 
@@ -87,7 +141,8 @@
 
                 let actionsHtml = '';
                 if (canEdit || canDelete) {
-                    actionsHtml += '<td class="text-end"><div class="table-row-actions">';
+                    actionsHtml += '<td class="text-end cell-actions">';
+                    actionsHtml += '<div class="table-row-actions">';
                     if (canEdit) {
                         actionsHtml += `<button class="btn-action btn-edit" onclick="modalEditarVinilo(${vinilo.id})" title="Editar"><i class="fa-solid fa-pen"></i></button>`;
                     }
@@ -96,17 +151,13 @@
                     }
                     actionsHtml += '</div></td>';
                 } else {
-                    actionsHtml += '<td></td>';
+                    actionsHtml += '<td class="cell-actions"></td>';
                 }
                 
                 html += `
                     <tr>
-                        <td><span class="cell-truncated" 
-                                data-full-text="${escapeHtml(vinilo.titulo)}">
-                                ${truncateText(vinilo.titulo, 50)}</span></td>
-                        <td><span class="cell-truncated" 
-                                data-full-text="${escapeHtml(vinilo.artista)}">
-                                ${truncateText(vinilo.artista, 50)}</span></td>
+                        <td><span class="cell-truncated" data-full-text="${escapeHtml(vinilo.titulo)}">${tituloTruncado}</span></td>
+                        <td><span class="cell-truncated" data-full-text="${escapeHtml(vinilo.artista)}">${artistaTruncado}</span></td>
                         <td>${vinilo.anio_lanzamiento || '-'}</td>
                         <td>${escapeHtml(vinilo.genero) || '-'}</td>
                         <td>${escapeHtml(vinilo.formato)}</td>
@@ -337,8 +388,8 @@
                             // Es creación: calcular en qué página caería el nuevo registro
                             calcularPaginaParaNuevoRegistro();
                         } else {
-                            // Es edición: recargar manteniendo página actual
-                            cargarVinilos();
+                            // Es edición: calcular y mover a la página del registro editado
+                            calcularPaginaParaRegistroEditado(id);
                         }
                     }
                 });
@@ -373,6 +424,59 @@
                 
                 currentPage = Math.max(1, nuevaPagina);
                 cargarVinilos();
+            }
+        });
+    }
+
+    // ✅ Función para calcular página del registro editado
+    function calcularPaginaParaRegistroEditado(registroId) {
+        const perPage = parseInt($('#per-page').val()) || 10;
+        const searchTerm = $('#search').val() || '';
+        
+        // Obtener total de registros
+        authAjax({
+            url: API_URL + 'api/vinilos',
+            type: 'GET',
+            data: { 
+                buscar: searchTerm, 
+                limit: 1,  // Solo necesitamos el total
+                page: 1, 
+                sort: currentSort,
+                order: currentOrder 
+            },
+            success: function(response) {
+                const total = response.total || 0;
+                
+                // Ahora necesitamos encontrar en qué página está el registro editado
+                // Hacemos una petición para obtener todos los IDs en orden
+                authAjax({
+                    url: API_URL + 'api/vinilos',
+                    type: 'GET',
+                    data: { 
+                        buscar: searchTerm, 
+                        limit: total,  // Traer todos
+                        page: 1, 
+                        sort: currentSort,
+                        order: currentOrder 
+                    },
+                    success: function(allData) {
+                        const todosLosRegistros = allData.data || [];
+                        
+                        // Buscar la posición del registro editado
+                        const index = todosLosRegistros.findIndex(r => r.id == registroId);
+                        
+                        if (index !== -1) {
+                            // Calcular página (índice base 0, páginas base 1)
+                            const nuevaPagina = Math.floor(index / perPage) + 1;
+                            currentPage = Math.max(1, nuevaPagina);
+                            cargarVinilos();
+                        } else {
+                            // Si no lo encuentra, recargar en página 1
+                            currentPage = 1;
+                            cargarVinilos();
+                        }
+                    }
+                });
             }
         });
     }
@@ -469,7 +573,11 @@
 
     $('#search').on('input', function() {
         clearTimeout(window.searchTimeout);
-        window.searchTimeout = setTimeout(() => { currentPage = 1; cargarVinilos(); }, 500);
+        window.searchTimeout = setTimeout(() => { 
+            currentFilters.buscar = $(this).val();
+            currentPage = 1; 
+            cargarVinilos(); 
+        }, 500);
     });
 
     $('#per-page').on('change', function() {
@@ -488,6 +596,44 @@
         div.textContent = text;
         return div.innerHTML;
     }
+
+    // Función para exportar
+    window.exportarVinilos = function(tipo) {
+        const perPage = 10000; // Exportar todos
+        
+        const params = new URLSearchParams({
+            buscar: currentFilters.buscar,
+            formato: currentFilters.formato,
+            estado: currentFilters.estado,
+            sort: currentSort,
+            order: currentOrder,
+            export: tipo
+        });
+        
+        window.open(API_URL + 'api/vinilos/export?' + params.toString(), '_blank');
+    };
+
+    // Limpiar filtros
+    window.liminarFiltros = function() {
+        currentFilters = { buscar: '', formato: '', estado: '' };
+        $('#search').val('');
+        $('#filter-formato').val('');
+        $('#filter-estado').val('');
+        currentPage = 1;
+        cargarVinilos();
+    };
+
+    $('#filter-formato').on('change', function() {
+        currentFilters.formato = $(this).val();
+        currentPage = 1;
+        cargarVinilos();
+    });
+
+    $('#filter-estado').on('change', function() {
+        currentFilters.estado = $(this).val();
+        currentPage = 1;
+        cargarVinilos();
+    });
 
     $(document).ready(function() { cargarVinilos(); });
 })();

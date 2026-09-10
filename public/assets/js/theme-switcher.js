@@ -2,7 +2,7 @@
  * Script global para la gestión del Modo Claro / Oscuro en Viniloteca
  */
 
-// 1. Aplicar el tema guardado INMEDIATAMENTE (evita parpadeo)
+// 1. Aplicar el tema guardado INMEDIATAMENTE (evita parpadeo FOUC)
 (function() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     if (savedTheme === 'dark') {
@@ -23,6 +23,7 @@ function toggleTheme() {
     
     localStorage.setItem('theme', newTheme);
     updateThemeIcon(newTheme);
+    updateAllLogos(newTheme); // ✅ Llamamos directamente aquí, sin sobreescribir la función
 }
 
 // 3. Cambiar el ícono del botón (Luna / Sol)
@@ -33,8 +34,26 @@ function updateThemeIcon(theme) {
     }
 }
 
-// 4. Inicializar icono al cargar
+// 4. Actualizar todos los logos con data-light y data-dark
+function updateAllLogos(theme) {
+    const logos = document.querySelectorAll('img[data-light][data-dark]');
+    const isDark = theme === 'dark';
+    
+    logos.forEach(logo => {
+        const newSrc = isDark ? logo.getAttribute('data-dark') : logo.getAttribute('data-light');
+        if (logo.src !== newSrc) {
+            logo.src = newSrc;
+        }
+    });
+}
+
+// 5. Inicialización al cargar el DOM (unificado y limpio)
 document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Actualizar ícono
     updateThemeIcon(savedTheme);
+    
+    // Actualizar logos
+    updateAllLogos(savedTheme);
 });
