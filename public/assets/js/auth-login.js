@@ -117,12 +117,34 @@ $(document).ready(function() {
                 $btn.css('background', 'linear-gradient(135deg, #28a745 0%, #218838 100%)');
                 
                 setTimeout(() => {
-                    window.location.href = API_URL + '/dashboard';
+                    window.location.replace(API_URL + 'dashboard');
                 }, 800);
             },
             error: function(xhr) {
                 $btn.prop('disabled', false).html(originalContent);
                 $btn.css('background', '');
+
+                // Caso especial: cuenta eliminada lógicamente
+                if (xhr.status === 403 && xhr.responseJSON && xhr.responseJSON.is_deleted) {
+                    const restoreName = xhr.responseJSON.nombre || '';
+                    showConfirmAlert({
+                        title: 'Cuenta eliminada',
+                        html: `Tu cuenta ha sido eliminada del sistema.<br><br>
+                               <strong>Email:</strong> ${email}<br><br>
+                               ¿Deseas restaurar tu cuenta? Te enviaremos un correo de verificación para reactivarla.`,
+                        confirmButtonText: 'Sí, restaurar cuenta',
+                        cancelButtonText: 'No, cancelar',
+                        onConfirm: () => {
+                            // Construimos la URL de forma segura, asegurando la barra '/'
+                            const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+                            window.location.href = baseUrl + '/register?restore_email=' + encodeURIComponent(email) + '&restore_name=' + encodeURIComponent(restoreName);
+                        },
+                        onCancel: () => {
+                            $('#login-email').val(email);
+                        }
+                    });
+                    return;
+                }
 
                 // Caso especial: cuenta no verificada
                 if (xhr.status === 403 && xhr.responseJSON) {

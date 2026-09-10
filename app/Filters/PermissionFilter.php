@@ -22,12 +22,19 @@ class PermissionFilter implements FilterInterface
         }
 
         $token = $matches[1];
-        $key   = getenv('JWT_SECRET');
+
+        // ✅ USAR env() EN LUGAR DE getenv()
+        $key = env('JWT_SECRET');
+
+        if (!$key) {
+            return response()
+                ->setStatusCode(500)
+                ->setJSON(['status' => 500, 'error' => 'JWT_SECRET no está configurado']);
+        }
 
         try {
             $decoded = JWT::decode($token, new Key($key, 'HS256'));
 
-            // Obtener ID del usuario según el payload guardado en AuthController
             $userId = $decoded->data->id ?? null;
 
             if (!$userId) {
@@ -36,10 +43,10 @@ class PermissionFilter implements FilterInterface
                     ->setJSON(['status' => 401, 'error' => 'Token inválido o malformado.']);
             }
 
-            // Adjuntar payload decodificado a la petición
-            $request->user = $decoded->data;
+            // Adjuntar payload decodificado a la petición (como array)
+            $request->user = (array) $decoded->data;
 
-            // Si la ruta especifica un permiso requerido (ej. ['vinilos.create'])
+            // Verificar permisos si se requiere
             if (!empty($arguments) && isset($arguments[0])) {
                 $permisoRequerido = $arguments[0];
 
@@ -51,14 +58,14 @@ class PermissionFilter implements FilterInterface
                         ->setStatusCode(403)
                         ->setJSON([
                             'status' => 403,
-                            'error'  => "Acceso denegado. Se requiere el permiso '{$permisoRequerido}' para realizar esta acción."
+                            'error'  => "Acceso denegado. Se requiere el permiso '{$permisoRequerido}'."
                         ]);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) { // ✅ Capturar Throwable en lugar de Exception
             return response()
                 ->setStatusCode(401)
-                ->setJSON(['status' => 401, 'error' => 'Token expirado o inválido: ' . $e->getMessage()]);
+                ->setJSON(['status' => 401, 'error' => 'Token expirado o inválido.']);
         }
     }
 

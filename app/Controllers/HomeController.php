@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\UserModel;
+
 class HomeController extends BaseController
 {
     /**
@@ -10,11 +12,16 @@ class HomeController extends BaseController
      */
     public function login()
     {
-        // Verificar si ya hay token en localStorage (del lado del cliente)
-        // O verificar sesión del servidor
-        if (session()->get('jwt_token') || session()->get('isLoggedIn')) {
+        // Verificar si hay un usuario REAL y válido
+        $user = session()->get('auth_user');
+
+        if ($user) {
             return redirect()->to('/dashboard');
         }
+
+        // Si llegamos aquí, NO hay usuario válido. 
+        // Destruimos la sesión COMPLETA para romper cualquier bucle de redirección.
+        session()->destroy();
 
         return view('auth/login');
     }
@@ -24,8 +31,18 @@ class HomeController extends BaseController
      */
     public function index()
     {
-        // El filtro JWT ya verificó la autenticación
-        return view('dashboard/index');
+        $user = session()->get('auth_user');
+
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new UserModel();
+        $permisos = $userModel->getPermissions($user['id']);
+
+        return view('dashboard/index', [
+            'permisos' => $permisos
+        ]);
     }
 
     public function register()
@@ -35,16 +52,49 @@ class HomeController extends BaseController
 
     public function vinilosView()
     {
-        return view('vinilos/index');
+        $user = session()->get('auth_user');
+
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new UserModel();
+        $permisos = $userModel->getPermissions($user['id']);
+
+        return view('vinilos/index', [
+            'permisos' => $permisos
+        ]);
     }
 
     public function usuariosView()
     {
-        return view('usuarios/index');
+        $user = session()->get('auth_user');
+
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new UserModel();
+        $permisos = $userModel->getPermissions($user['id']);
+
+        return view('usuarios/index', [
+            'permisos' => $permisos
+        ]);
     }
 
     public function rolesView()
     {
-        return view('roles/index');
+        $user = session()->get('auth_user');
+
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new UserModel();
+        $permisos = $userModel->getPermissions($user['id']);
+
+        return view('roles/index', [
+            'permisos' => $permisos
+        ]);
     }
 }

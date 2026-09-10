@@ -10,6 +10,10 @@ class UserModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
+
+    // ✅ CONFIGURACIÓN DE SOFT DELETE
+    protected $useSoftDeletes   = true;
+
     protected $allowedFields    = [
         'nombre',
         'email',
@@ -20,11 +24,13 @@ class UserModel extends Model
         'verification_token_expires_at',
         'reset_token',
         'reset_token_expires_at',
+        'deleted_at',
     ];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';  // ← Única declaración aquí
 
     protected $beforeInsert = ['hashPassword'];
     protected $beforeUpdate = ['hashPassword'];
@@ -48,15 +54,10 @@ class UserModel extends Model
             ->getResultArray();
     }
 
-    /**
-     * Obtener un array plano con las claves de permiso del usuario
-     * Ejemplo retorno: ['vinilos.view', 'vinilos.create', 'users.edit']
-     */
     public function getPermissions(int $userId): array
     {
         $db = \Config\Database::connect();
         $builder = $db->table('user_roles')
-            // Cambia 'role_id' por el nombre real que tenga en tu tabla 'rol_permiso' (ej. 'rol_id')
             ->join('rol_permiso', 'rol_permiso.rol_id = user_roles.role_id')
             ->join('permisos', 'permisos.id = rol_permiso.permiso_id')
             ->select('permisos.clave')
@@ -64,7 +65,6 @@ class UserModel extends Model
             ->groupBy('permisos.clave');
 
         $results = $builder->get()->getResultArray();
-
         return array_column($results, 'clave');
     }
 }

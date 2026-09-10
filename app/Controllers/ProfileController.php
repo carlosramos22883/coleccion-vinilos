@@ -18,22 +18,15 @@ class ProfileController extends BaseController
         helper('form');
     }
 
-    /**
-     * 1. Mostrar vista del perfil (HTML) - GET /perfil
-     */
     public function index()
     {
-        // DEBUG: Ver qué hay en la request
-        log_message('debug', 'ProfileController::index() llamado');
-        log_message('debug', 'Authorization header: ' . $this->request->getHeaderLine('Authorization'));
-        log_message('debug', 'Request user: ' . print_r($this->request->user ?? null, true));
-        $user = $this->request->user ?? null;
+        $user = session()->get('auth_user') ?? null;
 
-        if (!$user || !isset($user->id)) {
+        if (!$user || !isset($user['id'])) {
             return redirect()->to('/login')->with('error', 'Usuario no autenticado');
         }
 
-        $userData = $this->userModel->find($user->id);
+        $userData = $this->userModel->find($user['id']);
 
         if (!$userData) {
             return redirect()->to('/login')->with('error', 'Usuario no encontrado');
@@ -41,29 +34,29 @@ class ProfileController extends BaseController
 
         unset($userData['password']);
 
-        // ¡AQUÍ ESTÁ LA CLAVE! Devolvemos la vista HTML, no JSON
+        // ✅ Obtener permisos del usuario
+        $permisos = $this->userModel->getPermissions($user['id']);
+
         return view('perfil/index', [
             'user' => $userData,
-            'title' => 'Mi Perfil'
+            'title' => 'Mi Perfil',
+            'permisos' => $permisos  // ← AGREGAR ESTO
         ]);
     }
 
-    /**
-     * 2. Obtener perfil (API JSON para app.js) - GET /perfil/api
-     */
     public function getProfile(): ResponseInterface
     {
-        $user = $this->request->user ?? null;
+        $user = session()->get('auth_user') ?? null;
 
-        if (!$user || !isset($user->id)) {
+        if (!$user || !isset($user['id'])) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status' => 401,
                 'error'  => 'Usuario no autenticado'
             ]);
         }
 
-        $userData = $this->userModel->find($user->id);
-        $permisos = $this->userModel->getPermissions($user->id);
+        $userData = $this->userModel->find($user['id']);
+        $permisos = $this->userModel->getPermissions($user['id']);
         unset($userData['password']);
 
         return $this->response->setStatusCode(200)->setJSON([
@@ -75,23 +68,20 @@ class ProfileController extends BaseController
         ]);
     }
 
-    /**
-     * 3. Actualizar perfil (Formulario HTML) - POST /perfil/update
-     */
     public function update(): ResponseInterface
     {
-        $user = $this->request->user ?? null;
-        if (!$user || !isset($user->id)) {
+        $user = session()->get('auth_user') ?? null;
+        if (!$user || !isset($user['id'])) {
             return $this->response->setStatusCode(401)->setJSON([
                 'status' => 401,
                 'error' => 'No autenticado'
             ]);
         }
-        $userId = $user->id;
+        $userId = $user['id'];
 
         $rules = [
             'nombre' => 'required|min_length[3]|max_length[100]',
-            'email'  => "required|valid_email|is_unique[users.email,id,{$userId}]",
+            'email'  => 'required|valid_email',
         ];
 
         if (!$this->validate($rules)) {
@@ -107,10 +97,17 @@ class ProfileController extends BaseController
             'email'  => $this->request->getPost('email'),
         ];
 
-        // Verificar si el email cambió
         $currentUser = $this->userModel->find($userId);
         if ($currentUser['email'] !== $data['email']) {
-            // Generar nuevo token de verificación
+            // ✅ Verificar si el email ya existe (incluyendo eliminados para evitar Duplicate Entry en BD)
+            $existingEmail = $this->userModel->withDeleted()->where('email', $data['email'])->first();
+            if ($existingEmail) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 400,
+                    'error' => 'Este correo electrónico no está disponible.'
+                ]);
+            }
+
             $token = bin2hex(random_bytes(32));
             $expiresAt = date('Y-m-d H:i:s', strtotime('+24 hours'));
 
@@ -118,13 +115,8 @@ class ProfileController extends BaseController
             $data['verification_token'] = $token;
             $data['verification_token_expires_at'] = $expiresAt;
 
-            // Enviar nuevo correo de verificación
             $this->enviarCorreoVerificacion($data['email'], $data['nombre'], $token);
-
-            // Actualizar en base de datos
             $this->userModel->update($userId, $data);
-
-            // Cerrar sesión del servidor
             session()->destroy();
 
             return $this->response->setJSON([
@@ -133,7 +125,6 @@ class ProfileController extends BaseController
             ]);
         }
 
-        // Si no cambió el email, actualizar normalmente
         $this->userModel->update($userId, $data);
 
         return $this->response->setJSON([
@@ -142,16 +133,16 @@ class ProfileController extends BaseController
         ]);
     }
 
-    /**
-     * 4. Cambiar contraseña (Formulario HTML) - POST /perfil/cambiar-password
-     */
     public function cambiarPassword(): ResponseInterface
     {
-        $user = $this->request->user ?? null;
-        if (!$user || !isset($user->id)) {
-            return redirect()->to('/login')->with('error', 'No autenticado');
+        $user = session()->get('auth_user') ?? null;
+        if (!$user || !isset($user['id'])) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status' => 401,
+                'error' => 'No autenticado'
+            ]);
         }
-        $userId = $user->id;
+        $userId = $user['id'];
 
         $rules = [
             'password_actual'  => 'required',
@@ -160,75 +151,64 @@ class ProfileController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->response->setStatusCode(400)->setJSON([
+                'status' => 400,
+                'error' => 'Validación fallida',
+                'errors' => $this->validator->getErrors()
+            ]);
         }
 
         $passwordNuevo = $this->request->getPost('password_nuevo');
-
-        // Validar fortaleza de contraseña
         $passwordErrors = $this->validatePasswordStrength($passwordNuevo);
         if (!empty($passwordErrors)) {
-            return redirect()->back()->withInput()->with('errors', $passwordErrors);
+            return $this->response->setStatusCode(400)->setJSON([
+                'status' => 400,
+                'error' => 'Validación fallida',
+                'errors' => $passwordErrors
+            ]);
         }
 
         $userData = $this->userModel->find($userId);
 
         if (!password_verify($this->request->getPost('password_actual'), $userData['password'])) {
-            return redirect()->back()->with('error', 'La contraseña actual es incorrecta');
+            return $this->response->setStatusCode(400)->setJSON([
+                'status' => 400,
+                'error' => 'La contraseña actual es incorrecta'
+            ]);
         }
 
         $this->userModel->update($userId, [
-            'password' => password_hash($passwordNuevo, PASSWORD_BCRYPT)
+            'password' => $passwordNuevo
         ]);
 
-        return redirect()->back()->with('success', 'Contraseña actualizada exitosamente');
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Contraseña actualizada exitosamente'
+        ]);
     }
 
-    /**
-     * Validar fortaleza de contraseña
-     */
     private function validatePasswordStrength(string $password): array
     {
         $errors = [];
-
-        if (strlen($password) < 8) {
-            $errors[] = 'La contraseña debe tener al menos 8 caracteres';
-        }
-
-        if (!preg_match('/[A-Z]/', $password)) {
-            $errors[] = 'La contraseña debe contener al menos una letra mayúscula';
-        }
-
-        if (!preg_match('/[a-z]/', $password)) {
-            $errors[] = 'La contraseña debe contener al menos una letra minúscula';
-        }
-
-        if (!preg_match('/[0-9]/', $password)) {
-            $errors[] = 'La contraseña debe contener al menos un número';
-        }
-
-        if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};:\'"\\\\|,.<>\/?]/', $password)) {
-            $errors[] = 'La contraseña debe contener al menos un carácter especial (!@#$%^&*...)';
-        }
-
+        if (strlen($password) < 8) $errors[] = 'La contraseña debe tener al menos 8 caracteres';
+        if (!preg_match('/[A-Z]/', $password)) $errors[] = 'La contraseña debe contener al menos una letra mayúscula';
+        if (!preg_match('/[a-z]/', $password)) $errors[] = 'La contraseña debe contener al menos una letra minúscula';
+        if (!preg_match('/[0-9]/', $password)) $errors[] = 'La contraseña debe contener al menos un número';
+        if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};:\'"\\\\|,.<>\/?]/', $password)) $errors[] = 'La contraseña debe contener al menos un carácter especial (!@#$%^&*...)';
         return $errors;
     }
 
-    /**
-     * Subir y recortar avatar
-     * POST /perfil/upload-avatar
-     */
     public function uploadAvatar(): ResponseInterface
     {
-        $user = $this->request->user ?? null;
-        if (!$user || !isset($user->id)) {
+        $user = session()->get('auth_user') ?? null;
+        if (!$user || !isset($user['id'])) {
             return $this->response->setStatusCode(401)->setJSON([
                 'success' => false,
                 'message' => 'Usuario no autenticado'
             ]);
         }
 
-        $userId = $user->id;
+        $userId = $user['id'];
         $imageData = $this->request->getPost('image');
 
         if (!$imageData) {
@@ -239,7 +219,6 @@ class ProfileController extends BaseController
         }
 
         try {
-            // Decodificar base64
             $imageData = str_replace('data:image/png;base64,', '', $imageData);
             $imageData = str_replace(' ', '+', $imageData);
             $imageData = base64_decode($imageData);
@@ -248,23 +227,17 @@ class ProfileController extends BaseController
                 throw new \Exception('Error al decodificar la imagen');
             }
 
-            // Generar nombre único
             $filename = $userId . '_' . time() . '.png';
-
-            // CAMBIO IMPORTANTE: Guardar en public/uploads en lugar de writable
             $filepath = FCPATH . 'uploads/avatars/' . $filename;
 
-            // Crear directorio si no existe
             if (!is_dir(FCPATH . 'uploads/avatars')) {
                 mkdir(FCPATH . 'uploads/avatars', 0755, true);
             }
 
-            // Guardar imagen
             if (file_put_contents($filepath, $imageData) === false) {
                 throw new \Exception('Error al guardar la imagen en el servidor');
             }
 
-            // Eliminar avatar anterior si existe
             $currentUser = $this->userModel->find($userId);
             if (!empty($currentUser['avatar'])) {
                 $oldFile = FCPATH . 'uploads/' . $currentUser['avatar'];
@@ -273,7 +246,6 @@ class ProfileController extends BaseController
                 }
             }
 
-            // Guardar SOLO el nombre del archivo (no la ruta completa)
             $relativePath = 'avatars/' . $filename;
             $updated = $this->userModel->update($userId, ['avatar' => $relativePath]);
 
@@ -294,18 +266,12 @@ class ProfileController extends BaseController
         }
     }
 
-    /**
-     * Verificar si un email ya está en uso
-     * POST /perfil/check-email
-     */
     public function checkEmail(): ResponseInterface
     {
         $input = $this->request->getJSON(true);
-
         $email = $input['email'] ?? '';
         $userId = $input['user_id'] ?? 0;
 
-        // Buscar si el email existe y NO es del usuario actual
         $exists = $this->userModel
             ->where('email', $email)
             ->where('id !=', $userId)
@@ -313,6 +279,47 @@ class ProfileController extends BaseController
 
         return $this->response->setJSON([
             'exists' => $exists
+        ]);
+    }
+
+    public function eliminar(): ResponseInterface
+    {
+        $user = session()->get('auth_user') ?? null;
+        if (!$user || !isset($user['id'])) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'status' => 401,
+                'error' => 'No autenticado'
+            ]);
+        }
+        $userId = $user['id'];
+
+        $rules = ['password' => 'required'];
+
+        if (!$this->validate($rules)) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'status' => 400,
+                'error' => 'La contraseña es obligatoria'
+            ]);
+        }
+
+        $password = $this->request->getPost('password');
+        $userData = $this->userModel->find($userId);
+
+        if (!password_verify($password, $userData['password'])) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'status' => 400,
+                'error' => 'La contraseña es incorrecta'
+            ]);
+        }
+
+        // ✅ SOFT DELETE: El modelo se encarga de poner deleted_at gracias a useSoftDeletes = true
+        $this->userModel->delete($userId);
+
+        session()->destroy();
+
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Cuenta eliminada correctamente'
         ]);
     }
 }

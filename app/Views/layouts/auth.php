@@ -55,7 +55,9 @@
     <script src="<?= base_url('assets/js/auth-init.js') ?>"></script>
 
     <script>
-        const API_URL = "<?= site_url() ?>";
+        // Aseguramos que la URL base termine con un solo slash
+        const API_URL = "<?= rtrim(base_url(), '/') ?>/";
+        const REGISTER_URL = "<?= site_url('register') ?>";
     </script>
 
     <?= $this->renderSection('scripts') ?>

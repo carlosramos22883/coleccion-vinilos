@@ -4,17 +4,16 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
-// --- Rutas Web (Renderizan la Interfaz HTML) ---
-$routes->get('/',               'HomeController::login');
-$routes->get('login',           'HomeController::login');
-$routes->get('register',        'HomeController::register');
-$routes->get('dashboard',       'HomeController::index');
+// ============================================
+// RUTAS PÚBLICAS (Sin autenticación)
+// ============================================
 
-$routes->get('vinilos/view',    'HomeController::vinilosView');
-$routes->get('usuarios/view',   'HomeController::usuariosView');
-$routes->get('roles/view',      'HomeController::rolesView');
+// Página principal y autenticación
+$routes->get('/', 'HomeController::login');
+$routes->get('login', 'HomeController::login');
+$routes->get('register', 'HomeController::register');
 
-// --- Rutas Públicas de Autenticación & CORS Preflight ---
+// Auth API (CORS)
 $routes->options('auth/login', static function () {
     $response = response();
     $response->setHeader('Access-Control-Allow-Origin', '*');
@@ -22,64 +21,75 @@ $routes->options('auth/login', static function () {
     $response->setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     return $response->setStatusCode(200);
 });
+
 $routes->post('auth/register', 'AuthController::register');
-$routes->post('auth/login',    'AuthController::login');
+$routes->post('auth/login', 'AuthController::login');
 $routes->get('auth/verify', 'AuthController::verify');
 $routes->post('auth/resend-verification', 'AuthController::resendVerification');
 $routes->post('auth/forgot-password', 'AuthController::forgotPassword');
 $routes->get('auth/reset-password', 'AuthController::verifyResetToken');
 $routes->post('auth/reset-password', 'AuthController::resetPassword');
+$routes->post('auth/logout', 'AuthController::logout');
 
+// ============================================
+// RUTAS PROTEGIDAS (Requieren autenticación)
+// ============================================
 
+// --- VISTAS HTML (Páginas principales) ---
+$routes->get('dashboard', 'HomeController::index');
+$routes->get('vinilos', 'HomeController::vinilosView');        // ← Vista de vinilos
+$routes->get('usuarios', 'HomeController::usuariosView');       // ← Vista de usuarios
+$routes->get('roles', 'HomeController::rolesView');             // ← Vista de roles
+$routes->get('perfil', 'ProfileController::index');             // ← Vista de perfil
 
+// --- API: VINILOS (JSON) - CON PROTECCIÓN JWT ---
+$routes->group('api/vinilos', ['filter' => 'jwt'], function ($routes) {
+    $routes->get('', 'ViniloController::index');
+    $routes->get('(:num)', 'ViniloController::show/$1');
+    $routes->post('', 'ViniloController::create', ['filter' => 'permission:vinilos.create']);
+    $routes->put('(:num)', 'ViniloController::update/$1', ['filter' => 'permission:vinilos.edit']);
+    $routes->delete('(:num)', 'ViniloController::delete/$1', ['filter' => 'permission:vinilos.delete']);
 
-// --- Consulta Pública de Vinilos ---
-$routes->get('vinilos',        'ViniloController::index');
-$routes->get('vinilos/(:num)', 'ViniloController::show/$1');
+    // Rutas para fotos
+    $routes->post('(:num)/fotos', 'ViniloController::agregarFotos/$1', ['filter' => 'permission:vinilos.create']);
+    $routes->delete('fotos/(:num)', 'ViniloController::eliminarFoto/$1', ['filter' => 'permission:vinilos.delete']);
+});
 
-// --- Rutas Protegidas por JWT + Permisos Dinámicos ---
-$routes->post('vinilos',                'ViniloController::create',          ['filter' => 'permission:vinilos.create']);
-$routes->put('vinilos/(:num)',          'ViniloController::update/$1',       ['filter' => 'permission:vinilos.edit']);
-$routes->delete('vinilos/(:num)',       'ViniloController::delete/$1',       ['filter' => 'permission:vinilos.delete']);
+// --- API: USUARIOS (JSON) ---
+$routes->group('api/usuarios', ['filter' => 'permission:usuarios.view'], function ($routes) {
+    $routes->get('', 'UserController::index');
+    $routes->get('(:num)', 'UserController::show/$1');
+    $routes->post('', 'UserController::create', ['filter' => 'permission:usuarios.create']);
+    $routes->put('(:num)', 'UserController::update/$1', ['filter' => 'permission:usuarios.edit']);
+    $routes->delete('(:num)', 'UserController::delete/$1', ['filter' => 'permission:usuarios.delete']);
+    $routes->put('(:num)/rol', 'UserController::assignRole/$1', ['filter' => 'permission:usuarios.edit']);
+});
 
-$routes->post('vinilos/(:num)/fotos',   'ViniloController::agregarFotos/$1', ['filter' => 'permission:vinilos.create']);
-$routes->delete('vinilos/fotos/(:num)', 'ViniloController::eliminarFoto/$1', ['filter' => 'permission:vinilos.delete']);
+// --- API: ROLES Y PERMISOS (JSON) ---
+$routes->group('api/roles', ['filter' => 'permission:roles.view'], function ($routes) {
+    $routes->get('', 'RoleController::index');
+    $routes->get('(:num)', 'RoleController::show/$1');
+    $routes->post('', 'RoleController::create', ['filter' => 'permission:roles.create']);
+    $routes->put('(:num)', 'RoleController::update/$1', ['filter' => 'permission:roles.edit']);
+    $routes->delete('(:num)', 'RoleController::delete/$1', ['filter' => 'permission:roles.delete']);
+    $routes->post('(:num)/permisos', 'RoleController::syncPermissions/$1', ['filter' => 'permission:roles.edit']);
+});
 
+// --- API: PERFIL (JSON) ---
+$routes->group('api/perfil', ['filter' => 'jwt'], function ($routes) {
+    $routes->get('', 'ProfileController::getProfile');
+    $routes->put('', 'ProfileController::updateApi');
+    $routes->put('cambiar-password', 'ProfileController::cambiarPasswordApi');
+});
+
+// --- FORMULARIOS HTML: PERFIL ---
 $routes->group('perfil', ['filter' => 'jwt'], function ($routes) {
-    // Vista HTML
     $routes->get('/', 'ProfileController::index');
+    $routes->get('api', 'ProfileController::getProfile'); // ← AGREGAR ESTA LÍNEA
 
-    // Formularios HTML
     $routes->post('update', 'ProfileController::update');
-    $routes->post('check-email', 'ProfileController::checkEmail'); // ← AGREGAR ESTA
+    $routes->post('check-email', 'ProfileController::checkEmail');
     $routes->post('cambiar-password', 'ProfileController::cambiarPassword');
     $routes->post('upload-avatar', 'ProfileController::uploadAvatar');
     $routes->post('eliminar', 'ProfileController::eliminar');
-
-    // API JSON (para AJAX)
-    $routes->get('api', 'ProfileController::getProfile');
-    $routes->put('api', 'ProfileController::updateApi');
-    $routes->put('api/cambiar-password', 'ProfileController::cambiarPasswordApi');
 });
-
-// --- Rutas de Gestión de Usuarios (API) ---
-$routes->group('usuarios', ['filter' => 'permission:usuarios.view'], static function ($routes) {
-    $routes->get('/',            'UserController::index');
-    $routes->get('(:num)',       'UserController::show/$1');
-    $routes->post('/',           'UserController::create',     ['filter' => 'permission:usuarios.create']);
-    $routes->put('(:num)',       'UserController::update/$1',  ['filter' => 'permission:usuarios.edit']);
-    $routes->delete('(:num)',    'UserController::delete/$1',  ['filter' => 'permission:usuarios.delete']);
-    $routes->put('(:num)/rol',   'UserController::assignRole/$1', ['filter' => 'permission:usuarios.edit']);
-});
-
-// --- Rutas de Gestión de Roles y Permisos (API) ---
-$routes->group('roles', ['filter' => 'permission:roles.view'], static function ($routes) {
-    $routes->get('/',                 'RoleController::index');
-    $routes->get('(:num)',            'RoleController::show/$1');
-    $routes->post('/',                'RoleController::create',              ['filter' => 'permission:roles.create']);
-    $routes->put('(:num)',            'RoleController::update/$1',           ['filter' => 'permission:roles.edit']);
-    $routes->delete('(:num)',         'RoleController::delete/$1',           ['filter' => 'permission:roles.delete']);
-    $routes->post('(:num)/permisos',  'RoleController::syncPermissions/$1',  ['filter' => 'permission:roles.edit']);
-});
-
-$routes->post('auth/logout', 'AuthController::logout');

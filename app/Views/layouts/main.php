@@ -1,3 +1,6 @@
+<?php
+$permisos = $permisos ?? session()->get('user_permissions') ?? [];
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -50,15 +53,24 @@
             <li class="<?= uri_string() === 'dashboard' ? 'active' : '' ?>">
                 <a href="<?= site_url('dashboard') ?>"><i class="fa-solid fa-house"></i> Dashboard</a>
             </li>
-            <li class="<?= uri_string() === 'vinilos' || uri_string() === 'vinilos/view' ? 'active' : '' ?>">
-                <a href="<?= site_url('vinilos') ?>"><i class="fa-solid fa-compact-disc"></i> Catálogo</a>
-            </li>
-            <li class="<?= uri_string() === 'usuarios' || uri_string() === 'usuarios/view' ? 'active' : '' ?>">
-                <a href="<?= site_url('usuarios') ?>"><i class="fa-solid fa-users"></i> Usuarios</a>
-            </li>
-            <li class="<?= uri_string() === 'roles' || uri_string() === 'roles/view' ? 'active' : '' ?>">
-                <a href="<?= site_url('roles') ?>"><i class="fa-solid fa-shield-halved"></i> Roles y Permisos</a>
-            </li>
+
+            <?php if (in_array('vinilos.view', $permisos ?? [])): ?>
+                <li class="<?= uri_string() === 'vinilos' ? 'active' : '' ?>">
+                    <a href="<?= site_url('vinilos') ?>"><i class="fa-solid fa-compact-disc"></i> Vinilos</a>
+                </li>
+            <?php endif; ?>
+
+            <?php if (in_array('usuarios.view', $permisos ?? [])): ?>
+                <li class="<?= uri_string() === 'usuarios' ? 'active' : '' ?>">
+                    <a href="<?= site_url('usuarios') ?>"><i class="fa-solid fa-users"></i> Usuarios</a>
+                </li>
+            <?php endif; ?>
+
+            <?php if (in_array('roles.view', $permisos ?? [])): ?>
+                <li class="<?= uri_string() === 'roles' ? 'active' : '' ?>">
+                    <a href="<?= site_url('roles') ?>"><i class="fa-solid fa-shield-halved"></i> Roles y Permisos</a>
+                </li>
+            <?php endif; ?>
         </ul>
 
         <!-- NUEVO: Info del usuario al final del sidebar -->
@@ -132,6 +144,9 @@
     <script src="<?= base_url('assets/js/jquery.dataTables.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/dataTables.bootstrap5.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/sweetalert2.all.min.js') ?>"></script>
+
+    <!-- HELPERS DE SWEETALERT -->
+    <script src="<?= base_url('assets/js/sweetalert-helpers.js') ?>"></script>
 
     <!-- SCRIPT DE CAMBIO DE TEMA -->
     <script src="<?= base_url('assets/js/theme-switcher.js') ?>"></script>

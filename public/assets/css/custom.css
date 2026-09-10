@@ -47,7 +47,7 @@
 
     /* Inputs */
     --input-bg: rgba(248, 249, 250, 0.8);
-    --input-border: rgba(0, 0, 0, 0.1);
+    --input-border: #6c757d;  /* ← CAMBIAR: Gris oscuro en lugar de azul claro */
     --input-focus-border: var(--vinilo-orange);
 
     /* Botones */
@@ -65,6 +65,9 @@
 
     /* Modal close button */
     --btn-close-filter: none;
+
+    /* Tamaño máximo del contenido */
+    --content-max-width: 1400px;
 }
 
 /* =================================================
@@ -127,6 +130,9 @@
 
     /* Header del login en modo oscuro */
     --login-header-bg: linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.05) 100%);
+
+    /* Tamaño máximo del contenido */
+    --content-max-width: 1400px;
 }
 
 /* =================================================
@@ -957,23 +963,11 @@ body.auth-body .container {
 
 .main-container {
     flex: 1;
-    padding: 30px;
-    min-height: calc(100vh - 60px - 60px);
-    /* Espacios laterales elegantes */
+    width: 100%;
+    max-width: var(--content-max-width);
     margin: 0 auto;
-    max-width: 1400px;
-}
-
-@media (max-width: 1600px) {
-    .main-container {
-        padding: 25px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .main-container {
-        padding: 20px;
-    }
+    padding: 24px clamp(16px, 4vw, 48px);
+    min-height: calc(100vh - 60px - 60px);
 }
 
 footer {
@@ -1094,7 +1088,7 @@ footer {
 }
 
 /* Quick Actions Buttons */
-.btn-action {
+.btn-action-lg {
     padding: 10px 20px;
     border-radius: 10px;
     font-weight: 600;
@@ -1218,4 +1212,727 @@ footer {
         gap: 12px;
         align-items: flex-start;
     }
+}
+
+/* ============================================
+   MODALES CENTRADOS VERTICALMENTE (GLOBAL)
+   ============================================ */
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 1rem);
+}
+
+.modal-content {
+    width: 100%;
+}
+
+/* Para modales sm, md, lg, xl mantener proporciones */
+.modal-sm .modal-content { max-width: 300px; margin: 0 auto; }
+.modal-lg .modal-content { max-width: 800px; margin: 0 auto; }
+.modal-xl .modal-content { max-width: 1140px; margin: 0 auto; }
+
+/* ============================================
+   MODALES - MODO OSCURO
+   ============================================ */
+
+[data-theme="dark"] .modal-content {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .modal-header {
+    background: var(--sidebar-header-bg);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-body {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-footer {
+    background: var(--sidebar-header-bg);
+    border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal .form-control {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal .form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .modal .form-select {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal .form-select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Labels en modales - modo oscuro */
+[data-theme="dark"] .modal .form-label {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .modal .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .modal .btn-close {
+    filter: var(--btn-close-filter);
+}
+
+/* Botones en modal oscuro */
+[data-theme="dark"] .btn-secondary-custom {
+    background: #4b5563;
+    color: white;
+}
+
+[data-theme="dark"] .btn-secondary-custom:hover {
+    background: #374151;
+}
+
+/* ============================================
+   VALIDACIÓN DE FORMULARIOS EN MODALES
+   ============================================ */
+
+.modal .form-control.is-invalid,
+.modal .form-select.is-invalid {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+[data-theme="dark"] .modal .form-control.is-invalid,
+[data-theme="dark"] .modal .form-select.is-invalid {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ff6b6b'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ff6b6b' stroke='none'/%3e%3c/svg%3e");
+}
+
+.modal .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+[data-theme="dark"] .modal .invalid-feedback {
+    color: #ff6b6b;
+}
+
+.modal .form-control.is-invalid ~ .invalid-feedback,
+.modal .form-select.is-invalid ~ .invalid-feedback,
+.modal .invalid-feedback.show {
+    display: block;
+}
+
+/* Limpiar errores al escribir */
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 0.2rem rgba(242, 140, 40, 0.25);
+}
+
+[data-theme="dark"] .modal .form-control:focus,
+[data-theme="dark"] .modal .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(46, 134, 222, 0.25);
+}
+
+/* ============================================
+   ERRORES INLINE EN MODAL DE CONTRASEÑA
+   ============================================ */
+#form-change-password .form-control.is-invalid {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#form-change-password .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+#form-change-password .form-control.is-invalid ~ .invalid-feedback,
+#form-change-password .invalid-feedback.show {
+    display: block;
+}
+
+/* ============================================
+   ERRORES INLINE EN MODAL DE ELIMINAR CUENTA
+   ============================================ */
+#form-delete-account .form-control.is-invalid {
+    border-color: #dc3545 !important;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#form-delete-account .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+#form-delete-account .form-control.is-invalid ~ .invalid-feedback,
+#form-delete-account .invalid-feedback.show {
+    display: block;
+}
+
+/* ============================================
+   MODAL GRANDE
+   ============================================ */
+
+.modal-xl .modal-content {
+    max-width: 100%;
+}
+
+.modal-xl .modal-body {
+    padding: 2rem;
+}
+
+/* Ajustar inputs en modal grande */
+.modal-xl .form-control,
+.modal-xl .form-select {
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+}
+
+.modal-xl .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   CATÁLOGO DE VINILOS
+   ============================================ */
+
+/* Contenedor principal con padding reducido */
+
+/* Header de página */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header h1 i {
+    color: var(--vinilo-orange);
+}
+
+/* Tarjeta principal */
+.data-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+[data-theme="dark"]  .data-card {
+    background: var(--card-bg);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Toolbar */
+.table-toolbar {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+[data-theme="dark"]  .table-toolbar {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Campo de búsqueda */
+.table-search {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.table-search input {
+    width: 100%;
+    padding: 0.625rem 2.5rem 0.625rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .table-search input {
+    background: var(--card-bg);
+    border-color: #4b5563;
+    color: white;
+}
+
+.table-search input:focus {
+    outline: none;
+    border-color: var(--vinilo-orange);
+    box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.1);
+}
+
+.table-search i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+/* Selector "Por página" */
+.table-per-page select {
+    padding: 0.625rem 2rem 0.625rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+}
+
+[data-theme="dark"] .table-per-page select {
+    background: var(--card-bg);
+    border-color: #4b5563;
+    color: white;
+}
+
+/* Tabla */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table thead {
+    background: #f9fafb;
+}
+
+[data-theme="dark"] .data-table thead {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.data-table th {
+    padding: 0.875rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+[data-theme="dark"] .data-table th {
+    color: #9ca3af;
+    border-bottom-color: #4b5563;
+}
+
+.data-table td {
+    padding: 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+[data-theme="dark"] .data-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.data-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+[data-theme="dark"] .data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Badges de estado */
+.badge-estado {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.badge-estado.M,
+.badge-estado.NM {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-estado.EX {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-estado.VG\+,
+.badge-estado.VG {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-estado.G {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.badge-estado.F,
+.badge-estado.P {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Precio */
+.cell-price {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+/* Botones de acción */
+.table-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.btn-edit {
+    background: #4b5563;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #374151;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #b21f2d;
+    transform: translateY(-1px);
+}
+
+/* Paginación */
+.table-pagination {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+[data-theme="dark"] .table-pagination {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.pagination-info {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+[data-theme="dark"] .pagination-info {
+    color: #9ca3af;
+}
+
+.pagination {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+}
+
+.pagination .page-item {
+    margin: 0;
+}
+
+.pagination .page-link {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    color: var(--vinilo-orange);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .pagination .page-link {
+    background: var(--color-bg-dark);
+    border-color: #4b5563;
+    color: var(--vinilo-orange);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--vinilo-orange);
+    border-color: var(--vinilo-orange);
+    color: white;
+}
+
+.pagination .page-link:hover {
+    background: var(--vinilo-orange);
+    border-color: var(--vinilo-orange);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {    
+    
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .table-search {
+        max-width: 100%;
+    }
+    
+    .table-per-page {
+        width: 100%;
+    }
+    
+    .data-table {
+        font-size: 0.8rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+/* ============================================
+   PLACEHOLDERS MÁS VISIBLES EN FORMULARIOS
+   ============================================ */
+
+/* MODO CLARO - Placeholders más visibles en inputs y selects */
+.form-control::placeholder,
+.form-select::placeholder {
+    color: #B2BCD1 !important; /* Gris más oscuro que --text-secondary */    
+    opacity: 0.85 !important;
+    font-style: italic;
+    font-weight: 400;
+}
+
+/* MODO OSCURO - Placeholders claros sobre fondo oscuro */
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder {
+    color: #c1c9d2 !important; /* Más claro que --text-secondary (#adb5bd) */
+    font-style: italic;
+}
+
+/* Específico para modales (donde más se confunde con texto real) */
+.modal .form-control::placeholder,
+.modal .form-select::placeholder {
+    color: #B2BCD1 !important;
+    opacity: 0.85 !important;
+}
+
+[data-theme="dark"] .modal .form-control::placeholder,
+[data-theme="dark"] .modal .form-select::placeholder {
+    color: #c1c9d2 !important;
+    opacity: 0.9 !important;
+}
+
+/* Al hacer foco, los placeholders se vuelven más sutiles */
+.form-control:focus::placeholder,
+.form-select:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* Inputs de tipo number - mejorar visibilidad */
+input[type="number"]::placeholder {
+    font-weight: 500;
+}
+
+/* ============================================
+   FORZAR BORDES OSCUROS EN MODALES (MODO CLARO)
+   ============================================ */
+
+/* Sobrescribir estilos de Bootstrap en modales */
+.modal .form-control,
+.modal .form-select,
+.modal .input-custom {
+    border-color: var(--input-border) !important;
+}
+
+/* Asegurar que el foco también use el color correcto */
+.modal .form-control:focus,
+.modal .form-select:focus,
+.modal .input-custom:focus {
+    border-color: var(--input-focus-border) !important;
+}
+
+/* Inputs en modo oscuro dentro de modales */
+[data-theme="dark"] .modal .form-control,
+[data-theme="dark"] .modal .form-select {
+    border-color: var(--input-border) !important;
+}
+
+/* ============================================
+   TEXTOS TRUNCADOS EN TABLA CON TOOLTIP
+   ============================================ */
+
+.cell-truncated {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    cursor: help;
+    position: relative;
+}
+
+/* Tooltip mejorado - usa fixed positioning para evitar ser cortado */
+.cell-truncated[title]:hover,
+.cell-truncated[data-full-text]:hover {
+    position: static;
+    overflow: visible;
+}
+
+/* Tooltip personalizado con posicionamiento mejorado */
+.cell-truncated:hover::after {
+    content: attr(data-full-text);
+    position: fixed; /* CAMBIO: fixed en lugar de absolute */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow: auto;
+    z-index: 9999; /* Z-index muy alto */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    text-align: left;
+    line-height: 1.5;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .cell-truncated:hover::after {
+    background: rgba(30, 40, 50, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================
+   BORDES GRIS OSCURO - ESTÁNDAR GLOBAL
+   ============================================ */
+
+/* Inputs y selects en MODO CLARO (sobrescribe TODO) */
+:not([data-theme="dark"]) .form-control,
+:not([data-theme="dark"]) .form-select,
+:not([data-theme="dark"]) .input-custom,
+:not([data-theme="dark"]) input[type="text"],
+:not([data-theme="dark"]) input[type="email"],
+:not([data-theme="dark"]) input[type="password"],
+:not([data-theme="dark"]) input[type="number"],
+:not([data-theme="dark"]) input[type="search"],
+:not([data-theme="dark"]) textarea,
+:not([data-theme="dark"]) select {
+    border-color: #6c757d !important;
+}
+
+/* Foco mantiene el naranja */
+:not([data-theme="dark"]) .form-control:focus,
+:not([data-theme="dark"]) .form-select:focus,
+:not([data-theme="dark"]) .input-custom:focus,
+:not([data-theme="dark"]) input[type="text"]:focus,
+:not([data-theme="dark"]) input[type="email"]:focus,
+:not([data-theme="dark"]) input[type="password"]:focus,
+:not([data-theme="dark"]) input[type="number"]:focus,
+:not([data-theme="dark"]) input[type="search"]:focus,
+:not([data-theme="dark"]) textarea:focus,
+:not([data-theme="dark"]) select:focus {
+    border-color: var(--vinilo-orange) !important;
+}
+
+/* Específico para el buscador de la tabla */
+:not([data-theme="dark"]) .table-search input {
+    border-color: #6c757d !important;
+}
+
+:not([data-theme="dark"]) .table-search input:focus {
+    border-color: var(--vinilo-orange) !important;
+}
+
+/* Específico para el selector "por página" */
+:not([data-theme="dark"]) .table-per-page select {
+    border-color: #6c757d !important;
+}
+
+:not([data-theme="dark"]) .table-per-page select:focus {
+    border-color: var(--vinilo-orange) !important;
+}
+
+/* Modo oscuro mantiene sus colores azules */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-custom,
+[data-theme="dark"] .table-search input,
+[data-theme="dark"] .table-per-page select {
+    border-color: var(--input-border) !important;
 }

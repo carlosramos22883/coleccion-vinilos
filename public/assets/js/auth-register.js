@@ -1,4 +1,31 @@
 $(document).ready(function() {
+    console.log('Register page loaded'); // Debug para consola
+
+    // Verificar si viene de una restauración de cuenta eliminada
+    const urlParams = new URLSearchParams(window.location.search);
+    const restoreEmail = urlParams.get('restore_email');
+    const restoreName = urlParams.get('restore_name');
+    
+    if (restoreEmail) {
+        console.log('Restore email detected:', restoreEmail); // Debug para consola
+        
+        // 1. Poner el correo automáticamente en el campo
+        $('#reg-email').val(restoreEmail);
+        $('#reg-nombre').val(restoreName);
+        
+        // 2. Mostrar mensaje informativo (usando Swal directo para evitar errores de funciones no definidas)
+        Swal.fire({
+            icon: 'info',
+            title: 'Restauración de cuenta',
+            html: 'Hemos detectado que esta cuenta fue eliminada.<br>Al completar el registro, la restauraremos y te enviaremos un correo de verificación.',
+            timer: 8000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal2-custom-popup' // Mantiene tus estilos personalizados si los tienes
+            }
+        });
+    }
+
     $('#form-register').on('submit', function(e) {
         e.preventDefault();
 
@@ -12,7 +39,7 @@ $(document).ready(function() {
         $('.input-custom').removeClass('input-error');
         $('#error-nombre, #error-email, #error-password, #error-password-confirm').addClass('d-none').text('');
 
-        // Validaciones...
+        // 1. Validar Nombre
         if (nombre === '') {
             $('#reg-nombre').addClass('input-error');
             $('#error-nombre').text('El nombre completo es obligatorio.').removeClass('d-none');
@@ -81,10 +108,9 @@ $(document).ready(function() {
                 $btn.html('<i class="fa-solid fa-check"></i> <span>¡Registro exitoso!</span>');
                 $btn.css('background', 'linear-gradient(135deg, #28a745 0%, #218838 100%)');
 
-                // ¡AHORA ASÍ DE FÁCIL!
                 showSuccessAlert({
                     title: '¡Registro exitoso!',
-                    text: 'Tu cuenta ha sido creada correctamente. Por favor, revisa tu correo para verificar tu cuenta.',
+                    text: 'Tu cuenta ha sido creada (o restaurada) correctamente. Por favor, revisa tu correo para verificar tu cuenta.',
                     confirmButtonText: 'Ir al Login',
                     onConfirm: () => {
                         window.location.href = API_URL + '/login';
@@ -106,7 +132,6 @@ $(document).ready(function() {
                     }
                 }
 
-                // ¡TAMBIÉN ASÍ DE FÁCIL!
                 showErrorAlert({
                     title: 'Error al registrar',
                     html: errorMsg

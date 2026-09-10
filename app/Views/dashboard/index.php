@@ -77,13 +77,13 @@
             <div class="glass-card-dashboard p-4">
                 <h5 class="mb-3"><i class="fa-solid fa-bolt me-2 text-warning"></i>Acciones Rápidas</h5>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="<?= site_url('vinilos/view') ?>" class="btn btn-action btn-primary-custom">
+                    <a href="<?= site_url('vinilos/view') ?>" class="btn btn-action-lg btn-primary-custom">
                         <i class="fa-solid fa-plus me-2"></i> Agregar Nuevo Vinilo
                     </a>
-                    <a href="<?= site_url('vinilos/view') ?>" class="btn btn-action btn-secondary-custom">
+                    <a href="<?= site_url('vinilos/view') ?>" class="btn btn-action-lg btn-secondary-custom">
                         <i class="fa-solid fa-list me-2"></i> Ver Catálogo Completo
                     </a>
-                    <a href="<?= site_url('perfil') ?>" class="btn btn-action btn-outline-custom">
+                    <a href="<?= site_url('perfil') ?>" class="btn btn-action-lg btn-outline-custom">
                         <i class="fa-solid fa-user-gear me-2"></i> Mi Perfil
                     </a>
                 </div>
